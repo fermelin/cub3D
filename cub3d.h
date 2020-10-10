@@ -20,15 +20,33 @@
 #include <mlx.h>
 #include "libft.h"
 
-typedef	struct	s_data {
+#define SCALE 40
+typedef	struct	s_win {
+	void		*mlx;
+	void		*window;
 	void		*img;
 	char		*addr;
 	int			bits_per_pixel;
 	int			line_length;
 	int			endian;
-}				t_data;
+}				t_win;
 
-void    draw_square(t_data img, int x, int y);
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+typedef	struct s_player
+{
+	int			x;
+	int			y;
+
+}				t_player;
+
+typedef	struct s_all
+{
+	t_win		*win;
+	t_player	*player;
+	char		**map;
+}				t_all;
+
+void    draw_square(t_all *all, int x, int y, char c);
+void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
+char	**get_map(char *config);
 
 #endif
