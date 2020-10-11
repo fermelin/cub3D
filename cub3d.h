@@ -38,10 +38,18 @@ typedef	struct s_player
 
 }				t_player;
 
+typedef struct s_ray
+{
+	float		x;
+	float		y;
+	float		dir;
+}				t_ray;
+
 typedef	struct s_all
 {
 	t_win		*win;
 	t_player	*player;
+	t_ray		*ray;
 	char		**map;
 }				t_all;
 

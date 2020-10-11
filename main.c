@@ -26,7 +26,7 @@ void	set_background(t_all *all)
 	int x,y;
 	y = 0;
     int color;
-    color = 0x00000000;
+    color = 0x000000FF;
     while (y < 1080 / 2)
     {
         x = 0;
@@ -37,9 +37,9 @@ void	set_background(t_all *all)
         }
         y++;
         if (y % 3 == 0)
-            color++;
+            color--;
     }
-    color = 0x0000FF00;
+    color = 0x00000000;
     while (y < 1080)
     {
         x = 0;
@@ -49,8 +49,8 @@ void	set_background(t_all *all)
             x++;
         }
         y++;
-        if (y % 3 == 0)
-            color-= 256;
+        if (y % 3 == 0) //исправить, чтобы зависело от разрешения экрана
+            color+= 256;
     }
 }
 
@@ -100,25 +100,33 @@ void	draw_square(t_all *all, int x, int y, char c)
     }	
 }
 
+void	cast_ray(t_all *all)
+{
+	all->ray->x = all->player->x + SCALE / 2;
+	all->ray->y = all->player->y + SCALE / 2;
+
+}
 void	draw_player(t_all *all)
 {
-	int x1, y1, x_begin;
+	int x1, y1, x_begin, x, y;
 
 	x1 = all->player->x + SCALE;
 	y1 = all->player->y + SCALE;
-
-	x_begin = all->player->x;
-	while (all->player->y < y1)
+	x = all->player->x;
+	y = all->player->y;
+	x_begin = x;
+	while (y < y1)
 	{
-		all->player->x = x_begin;
-		while (all->player->x < x1)
+		x = x_begin;
+		while (x < x1)
 		{
-			my_mlx_pixel_put(all->win, all->player->x, all->player->y, 0x0000FF00);
-			all->player->x++;
+			my_mlx_pixel_put(all->win, x, y, 0x0000FF00);
+			x++;
 		}
-		all->player->y++;
+		y++;
 	}
 }
+
 char	**get_map(char *config)
 {
 	int		fd;	
@@ -148,13 +156,15 @@ char	**get_map(char *config)
 	return (map1);
 }
 
-void	draw_screen(t_all *all)
+int	draw_screen(t_all *all)
 {
 	set_background(all);
 	draw_map(all);
 	draw_player(all);
 	mlx_put_image_to_window(all->win->mlx, all->win->window, all->win->img, 0, 0);
+	return (0);
 }
+
 int 	key_press(int key, t_all *all)
 {
 	if (key == 1)
@@ -165,7 +175,13 @@ int 	key_press(int key, t_all *all)
 		all->player->x += 1;
 	else if (key == 0)
 		all->player->x -= 1;
-	draw_screen(all);
+	else if (key == 53)
+	{
+		mlx_destroy_window(all->win->mlx, all->win->window);
+		return (0);
+	}
+	mlx_loop_hook(all->win->mlx, &draw_screen, all);
+	//draw_screen(all);
 	printf("the key is : %d\n", key);
 	return (0);
 }
@@ -192,16 +208,19 @@ void	find_player(t_all *all)
 		y++;
 	}
 }
+
 int		main(int argc, char **argv)
 {
 	t_win		win;
 	t_player	player;
 	t_all		all;
+	t_ray		ray;
 
 	if (argc == 2)
 	{
 		all.player = &player;
 		all.win = &win;
+		all.ray = &ray;
 		win.mlx = mlx_init();
 		win.window = mlx_new_window(win.mlx, 1920, 1080, "hello world!");
 		win.img = mlx_new_image(win.mlx, 1920, 1080);
