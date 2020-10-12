@@ -27,10 +27,10 @@ void	set_background(t_all *all)
 	y = 0;
     int color;
     color = 0x000000FF;
-    while (y < 1080 / 2)
+    while (y < all->win->size_y / 2)
     {
         x = 0;
-        while (x < 1920)
+        while (x < all->win->size_x)
         {
             my_mlx_pixel_put(all->win, x, y, color);
             x++;
@@ -40,10 +40,10 @@ void	set_background(t_all *all)
             color--;
     }
     color = 0x00000000;
-    while (y < 1080)
+    while (y < all->win->size_y)
     {
         x = 0;
-        while (x < 1920)
+        while (x < all->win->size_x)
         {
             my_mlx_pixel_put(all->win, x, y, color);
             x++;
@@ -100,20 +100,65 @@ void	draw_square(t_all *all, int x, int y, char c)
     }	
 }
 
-void	cast_ray(t_all *all)
+void	cast_rays(t_all *all)
 {
-	all->ray->x = all->player->x + SCALE / 2;
-	all->ray->y = all->player->y + SCALE / 2;
+	t_player ray;
+	double	start;
+	double	end;
+	double 	ray_len;
+	double 	x_line;
 
+	ray = *all->player;
+	start = ray.dir - (M_PI / 6);
+	end = ray.dir + (M_PI / 6);
+	x_line = 0;
+
+	while (start <= end)
+	{
+		ray.x = all->player->x;
+		ray.y = all->player->y;
+		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
+		{
+			ray.x += cos(start);
+			ray.y += sin(start);	
+			my_mlx_pixel_put(all->win, ray.x, ray.y, 0x00FF0000);
+		}
+		ray_len = hypot((all->player->x - ray.x), (all->player->y - ray.y)) * cos(start - ray.dir);
+		printf("%f\n", ray_len);
+		x_line++;
+		draw_vertical_line(all, ray_len, x_line);
+		start += (M_PI / 3) / all->win->size_x;
+	}
 }
+
+void	draw_vertical_line(t_all *all, double ray_len, double x_line)
+{
+	int y, y1;
+	double slice_height;
+
+	slice_height = 0;
+	if (ray_len != 0)
+		slice_height = (int)((SCALE / ray_len * all->win->size_x * 0.83));
+	printf("%f\n", slice_height);
+	if (slice_height > all->win->size_y)
+		slice_height = all->win->size_y;
+	y = ((all->win->size_y - slice_height) / 2);
+	y1 = all->win->size_y - y;
+	while (y < y1)
+	{
+		my_mlx_pixel_put(all->win, x_line, y, 0x00FFFFFF);
+		y++;
+	}
+}
+
 void	draw_player(t_all *all)
 {
 	int x1, y1, x_begin, x, y;
 
-	x1 = all->player->x + SCALE;
-	y1 = all->player->y + SCALE;
-	x = all->player->x;
-	y = all->player->y;
+	x1 = all->player->x + SCALE / 2;
+	y1 = all->player->y + SCALE / 2;
+	x = all->player->x - SCALE / 2;
+	y = all->player->y - SCALE / 2;
 	x_begin = x;
 	while (y < y1)
 	{
@@ -160,6 +205,7 @@ int	draw_screen(t_all *all)
 {
 	set_background(all);
 	draw_map(all);
+	cast_rays(all);
 	draw_player(all);
 	mlx_put_image_to_window(all->win->mlx, all->win->window, all->win->img, 0, 0);
 	return (0);
@@ -167,21 +213,32 @@ int	draw_screen(t_all *all)
 
 int 	key_press(int key, t_all *all)
 {
-	if (key == 1)
-		all->player->y += 1;
-	else if (key == 13)
-		all->player->y -= 1;
+	if (key == 13)
+	{
+		if (all->map[(int)(all->player->y / SCALE)][(int)(all->player->x / SCALE)] != '1')
+		{
+			all->player->x += cos(all->player->dir) * 4;
+			all->player->y += sin(all->player->dir) * 4;
+		}
+	}
+	else if (key == 1)
+	{
+		if (all->map[(int)(all->player->y / SCALE)][(int)(all->player->x / SCALE)] != '1')
+		{
+			all->player->x -= cos(all->player->dir) * 4;
+			all->player->y -= sin(all->player->dir) * 4;
+		}
+	}
 	else if (key == 2)
-		all->player->x += 1;
+		all->player->dir += 0.1;
 	else if (key == 0)
-		all->player->x -= 1;
+		all->player->dir -= 0.1;
 	else if (key == 53)
 	{
 		mlx_destroy_window(all->win->mlx, all->win->window);
-		return (0);
+		exit (0);
 	}
-	mlx_loop_hook(all->win->mlx, &draw_screen, all);
-	//draw_screen(all);
+	draw_screen(all);
 	printf("the key is : %d\n", key);
 	return (0);
 }
@@ -199,14 +256,15 @@ void	find_player(t_all *all)
 		{
 			if (all->map[y][x] == 'W' || all->map[y][x] == 'E' || all->map[y][x] == 'S' || all->map[y][x] == 'N')
 			{
-				all->player->x = x * SCALE;
-				all->player->y = y * SCALE;
+				all->player->x = x * SCALE + SCALE / 2;
+				all->player->y = y * SCALE + SCALE / 2;
 				return ;
 			}
 			x++;
 		}
 		y++;
 	}
+	
 }
 
 int		main(int argc, char **argv)
@@ -214,18 +272,22 @@ int		main(int argc, char **argv)
 	t_win		win;
 	t_player	player;
 	t_all		all;
-	t_ray		ray;
 
+	
 	if (argc == 2)
 	{
+
 		all.player = &player;
 		all.win = &win;
-		all.ray = &ray;
 		win.mlx = mlx_init();
-		win.window = mlx_new_window(win.mlx, 1920, 1080, "hello world!");
-		win.img = mlx_new_image(win.mlx, 1920, 1080);
+		mlx_get_screen_size(win.mlx, &win.size_x, &win.size_y);
+		win.window = mlx_new_window(win.mlx, win.size_x, win.size_y, "hello world!");
+		win.img = mlx_new_image(win.mlx, win.size_x, win.size_y);
 		win.addr = mlx_get_data_addr(win.img, &win.bits_per_pixel, &win.line_length, &win.endian);
 		all.map = get_map(argv[1]);
+		player.dir = 0;
+		player.projection_plan = win.size_x / (tan(M_PI / 6) * 2);
+		printf("%d\n", player.projection_plan);
 		find_player(&all);
 		draw_screen(&all);
 		mlx_hook(win.window, 2, (1L << 0), &key_press, &all);

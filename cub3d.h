@@ -20,7 +20,8 @@
 #include <mlx.h>
 #include "libft.h"
 
-#define SCALE 40
+#define SCALE 30
+
 typedef	struct	s_win {
 	void		*mlx;
 	void		*window;
@@ -29,32 +30,31 @@ typedef	struct	s_win {
 	int			bits_per_pixel;
 	int			line_length;
 	int			endian;
+	int			size_x;
+	int			size_y;
 }				t_win;
 
 typedef	struct s_player
 {
-	int			x;
-	int			y;
+	float			x;
+	float			y;
+	float			dir;
+	int				projection_plan;
 
 }				t_player;
-
-typedef struct s_ray
-{
-	float		x;
-	float		y;
-	float		dir;
-}				t_ray;
 
 typedef	struct s_all
 {
 	t_win		*win;
 	t_player	*player;
-	t_ray		*ray;
 	char		**map;
 }				t_all;
+
+int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
 void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 char	**get_map(char *config);
+void	draw_vertical_line(t_all *all, double ray_len, double x_line);
 
 #endif
