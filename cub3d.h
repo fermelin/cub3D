@@ -30,12 +30,20 @@ typedef	struct	s_win {
 	int			bits_per_pixel;
 	int			line_length;
 	int			endian;
-	int			size_x;
-	int			size_y;
+	int			screen_x;
+	int			screen_y;
+	int			map_x;
+	int			map_y;
 }				t_win;
 
 typedef	struct s_player
 {
+	float			x_vert;
+	float			y_vert;
+	float			y_diff;
+	float			x_diff;
+	float			x_hor;
+	float			y_hor;
 	float			x;
 	float			y;
 	float			dir;
@@ -55,6 +63,7 @@ int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 char	**get_map(char *config);
-void	draw_vertical_line(t_all *all, double ray_len, double x_line);
+void	draw_vertical_line(t_all *all, double ray_len, int x_line);
+int 	round_down(double x);
 
 #endif

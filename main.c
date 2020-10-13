@@ -27,10 +27,10 @@ void	set_background(t_all *all)
 	y = 0;
     int color;
     color = 0x000000FF;
-    while (y < all->win->size_y / 2)
+    while (y < all->win->screen_y / 2)
     {
         x = 0;
-        while (x < all->win->size_x)
+        while (x < all->win->screen_x)
         {
             my_mlx_pixel_put(all->win, x, y, color);
             x++;
@@ -40,10 +40,10 @@ void	set_background(t_all *all)
             color--;
     }
     color = 0x00000000;
-    while (y < all->win->size_y)
+    while (y < all->win->screen_y)
     {
         x = 0;
-        while (x < all->win->size_x)
+        while (x < all->win->screen_x)
         {
             my_mlx_pixel_put(all->win, x, y, color);
             x++;
@@ -103,47 +103,125 @@ void	draw_square(t_all *all, int x, int y, char c)
 void	cast_rays(t_all *all)
 {
 	t_player ray;
+	t_player ray_new;
 	double	start;
 	double	end;
 	double 	ray_len;
-	double 	x_line;
-
+	int 	x_line;
+	double	ray_hor;
+	double	ray_vert;
 	ray = *all->player;
+	ray_new = *all->player;
 	start = ray.dir - (M_PI / 6);
 	end = ray.dir + (M_PI / 6);
+	printf("end is %24f\n", end);
 	x_line = 0;
 
-	while (start <= end)
+	while (start < end)
 	{
 		ray.x = all->player->x;
 		ray.y = all->player->y;
 		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
 		{
 			ray.x += cos(start);
-			ray.y += sin(start);	
+			ray.y -= sin(start);	
 			my_mlx_pixel_put(all->win, ray.x, ray.y, 0x00FF0000);
 		}
-		ray_len = hypot((all->player->x - ray.x), (all->player->y - ray.y)) * cos(start - ray.dir);
-		printf("%f\n", ray_len);
+		if (sin(start) > 0 )	//checking horizontal intersections
+		{
+			ray.y_hor = round_down(all->player->y / SCALE) * SCALE - 1;
+			ray.x_hor = all->player->x + (all->player->y - ray.y_hor) / tan(start);
+			ray.x_diff = SCALE / tan(start);
+			while (ray.y_hor / SCALE > 0 && ray.y_hor / SCALE < all->win->map_y && 
+				ray.x_hor / SCALE > 0 && ray.x_hor / SCALE < all->win->map_x && 
+				all->map[(int)(ray.y_hor / SCALE)][(int)(ray.x_hor / SCALE)] != '1')
+			{
+				ray.y_hor -= SCALE;
+				ray.x_hor += ray.x_diff;
+				printf("y_hor = %20f x_hor = %20f\n", ray.y_hor / SCALE, ray.x_hor / SCALE);
+			}
+		}
+		else
+		{
+			ray.y_hor = round_down(all->player->y / SCALE) * SCALE + SCALE;
+			ray.x_hor = all->player->x + (all->player->y - ray.y_hor) / tan(start);
+			ray.x_diff = SCALE / tan(start);
+			while (ray.y_hor / SCALE > 0 && ray.y_hor / SCALE < all->win->map_y && 
+				ray.x_hor / SCALE > 0 && ray.x_hor / SCALE < all->win->map_x && 
+				all->map[(int)(ray.y_hor / SCALE)][(int)(ray.x_hor / SCALE)] != '1')
+			{
+				ray.y_hor += SCALE;
+				ray.x_hor += ray.x_diff;
+				printf("y_hor = %20f x_hor = %20f\n", ray.y_hor / SCALE, ray.x_hor / SCALE);
+			}
+		}
+		if (cos(start) > 0)	//checking vertical intersections
+		{
+			ray.x_vert = round_down(all->player->x / SCALE) * SCALE + SCALE;
+			ray.y_vert = all->player->y + (all->player->x - ray.x_vert) * tan(start);
+			ray.y_diff = SCALE * tan(start);
+			while (ray.y_vert / SCALE > 0 && ray.y_vert / SCALE < all->win->map_y && 
+				ray.x_vert / SCALE > 0 && ray.x_vert / SCALE < all->win->map_x &&
+				all->map[(int)(ray.y_vert / SCALE)][(int)(ray.x_vert / SCALE)] != '1')
+			{
+				ray.x_vert += SCALE;
+				ray.y_vert += ray.y_diff;
+				printf("y_vert = %20f x_vert = %20f\n", ray.y_vert / SCALE, ray.x_vert / SCALE);
+			}
+		}
+		else
+		{
+			ray.x_vert = round_down(all->player->x / SCALE) * SCALE - 1;
+			ray.y_vert = all->player->y + (all->player->x - ray.x_vert) * tan(start);
+			ray.y_diff = SCALE * tan(start);
+			while (ray.y_vert / SCALE > 0 && ray.y_vert / SCALE < all->win->map_y && 
+				ray.x_vert / SCALE > 0 && ray.x_vert / SCALE < all->win->map_x &&
+				all->map[(int)(ray.y_vert / SCALE)][(int)(ray.x_vert / SCALE)] != '1')
+			{
+				ray.x_vert -= SCALE;
+				ray.y_vert += ray.y_diff;
+				printf("y_vert = %20f x_vert = %20f\n", ray.y_vert / SCALE, ray.x_vert / SCALE);
+			}
+		}
+		if (start == M_PI_2 || start == 3 * M_PI_2)
+		{
+			ray.y_hor = INFINITY;
+			ray.x_hor = INFINITY;
+		}
+		ray_hor = hypot((all->player->x - ray.x_hor), (all->player->y - ray.y_hor));
+		ray_vert = hypot((all->player->x - ray.x_vert), (all->player->y - ray.y_vert));
+		ray_len = (ray_hor > ray_vert) ? (ray_vert * cos(start - ray.dir)) : (ray_hor * cos(start - ray.dir));
+		//printf("ray_len is %24f\n", ray_len);
+		//printf("start is %24f in %d line\n", start, x_line);
 		x_line++;
 		draw_vertical_line(all, ray_len, x_line);
-		start += (M_PI / 3) / all->win->size_x;
+		start += (M_PI / 3) / all->win->screen_x;
 	}
 }
 
-void	draw_vertical_line(t_all *all, double ray_len, double x_line)
+int 	round_down(double x)
+{
+	int x_rounded;
+
+	x_rounded = round(x);
+	if (x_rounded > x)
+		x_rounded--;
+	return (x_rounded);
+}
+
+void	draw_vertical_line(t_all *all, double ray_len, int x_line)
 {
 	int y, y1;
 	double slice_height;
 
 	slice_height = 0;
 	if (ray_len != 0)
-		slice_height = (int)((SCALE / ray_len * all->win->size_x * 0.83));
-	printf("%f\n", slice_height);
-	if (slice_height > all->win->size_y)
-		slice_height = all->win->size_y;
-	y = ((all->win->size_y - slice_height) / 2);
-	y1 = all->win->size_y - y;
+		slice_height = (int)((SCALE / ray_len * all->win->screen_x * 0.83));
+	printf("slice_height is %24f\n", slice_height);
+	if (slice_height > all->win->screen_y)
+		slice_height = all->win->screen_y;
+	y = ((all->win->screen_y - slice_height) / 2);
+	y1 = all->win->screen_y - y;
 	while (y < y1)
 	{
 		my_mlx_pixel_put(all->win, x_line, y, 0x00FFFFFF);
@@ -200,6 +278,53 @@ char	**get_map(char *config)
 	}
 	return (map1);
 }
+void	get_map_size(char **map, t_all *all)
+{
+	int 	x;
+	int 	y;
+	int 	x_max;
+
+	y = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			if (x > x_max)
+				x_max = x;
+			x++;
+		}
+		y++;
+	}
+	all->win->map_x = x_max + 1;
+	all->win->map_y = y;
+}
+
+char	**to_rectangle_map(char **map, t_all *all)
+{
+	int 	x;
+	int 	y;
+	char	*tmp;
+
+	get_map_size(map, all);
+	y = 0;
+	while (y < all->win->map_y)
+	{
+		x = 0;
+		if (!(tmp = ft_calloc(1, all->win->map_x)))
+			return (NULL);
+		while (map[y][x])
+		{
+			tmp[x] = map[y][x];
+			x++;
+		}
+		free(map[y]);
+		map[y] = tmp;
+		tmp = NULL;
+		y++;
+	}
+	return (map);
+}
 
 int	draw_screen(t_all *all)
 {
@@ -218,7 +343,7 @@ int 	key_press(int key, t_all *all)
 		if (all->map[(int)(all->player->y / SCALE)][(int)(all->player->x / SCALE)] != '1')
 		{
 			all->player->x += cos(all->player->dir) * 4;
-			all->player->y += sin(all->player->dir) * 4;
+			all->player->y -= sin(all->player->dir) * 4;
 		}
 	}
 	else if (key == 1)
@@ -226,7 +351,7 @@ int 	key_press(int key, t_all *all)
 		if (all->map[(int)(all->player->y / SCALE)][(int)(all->player->x / SCALE)] != '1')
 		{
 			all->player->x -= cos(all->player->dir) * 4;
-			all->player->y -= sin(all->player->dir) * 4;
+			all->player->y += sin(all->player->dir) * 4;
 		}
 	}
 	else if (key == 2)
@@ -280,13 +405,13 @@ int		main(int argc, char **argv)
 		all.player = &player;
 		all.win = &win;
 		win.mlx = mlx_init();
-		mlx_get_screen_size(win.mlx, &win.size_x, &win.size_y);
-		win.window = mlx_new_window(win.mlx, win.size_x, win.size_y, "hello world!");
-		win.img = mlx_new_image(win.mlx, win.size_x, win.size_y);
+		mlx_get_screen_size(win.mlx, &win.screen_x, &win.screen_y);
+		win.window = mlx_new_window(win.mlx, win.screen_x, win.screen_y, "cub3D");
+		win.img = mlx_new_image(win.mlx, win.screen_x, win.screen_y);
 		win.addr = mlx_get_data_addr(win.img, &win.bits_per_pixel, &win.line_length, &win.endian);
-		all.map = get_map(argv[1]);
-		player.dir = 0;
-		player.projection_plan = win.size_x / (tan(M_PI / 6) * 2);
+		all.map = to_rectangle_map(get_map(argv[1]), &all);
+		player.dir = M_PI;
+		player.projection_plan = win.screen_x / (tan(M_PI / 6) * 2);
 		printf("%d\n", player.projection_plan);
 		find_player(&all);
 		draw_screen(&all);
