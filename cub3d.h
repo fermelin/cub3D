@@ -52,10 +52,19 @@ typedef	struct s_player
 
 }				t_player;
 
+typedef struct s_ray
+{
+	int			is_left;
+	int			is_right;
+	int			is_up;
+	int			is_down;
+}				t_ray;
+
 typedef	struct s_all
 {
 	t_win		*win;
 	t_player	*player;
+	t_ray		*ray;
 	char		**map;
 }				t_all;
 

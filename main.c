@@ -100,23 +100,44 @@ void	draw_square(t_all *all, int x, int y, char c)
     }	
 }
 
+void	get_ray_direction(t_all *all, double start)
+{
+	if (cos(start) > 0)
+		all->ray->is_right = 1;
+	else
+		all->ray->is_right = 0;
+	if (cos(start) < 0)
+		all->ray->is_left = 1;
+	else
+		all->ray->is_left = 0;
+	if (sin(start) > 0)
+		all->ray->is_up = 1;
+	else
+		all->ray->is_up = 0;
+	if (sin(start) < 0)
+		all->ray->is_down = 1;
+	else
+		all->ray->is_down = 0;
+}
 double	horizontal_intersection(t_all *all, double start)
 {
-	double	x_hor;
-	double	y_hor;
-	double	x_diff;
+	float	x_hor;
+	float	y_hor;
+	float	x_diff;
 
 	x_hor = 0;
 	y_hor = 0;
 	if (1)
 	{
-		if (sin(start) > 0)	//checking horizontal intersections
+		if (all->ray->is_up)	//checking horizontal intersections
 		{
-			y_hor = round_down(all->player->y / SCALE) * SCALE - 0.0000001;
+			y_hor = round_down(all->player->y / SCALE) * SCALE - 0.001;
 			x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
 			x_diff = SCALE / tan(start);
-			while (y_hor / SCALE > 0 && y_hor / SCALE < all->win->map_y && 
-				x_hor / SCALE > 0 && x_hor / SCALE < all->win->map_x && 
+			x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
+			x_diff *= (all->ray->is_right && x_diff < 0) ? -1 : 1;
+			while (y_hor / SCALE >= 0 && y_hor / SCALE < all->win->map_y && 
+				x_hor / SCALE >= 0 && x_hor / SCALE < all->win->map_x && 
 				all->map[(int)(y_hor / SCALE)][(int)(x_hor / SCALE)] != '1')
 			{
 				y_hor -= SCALE;
@@ -124,13 +145,15 @@ double	horizontal_intersection(t_all *all, double start)
 				//printf("y_hor = %20f x_hor = %20f\n", y_hor / SCALE, x_hor / SCALE);
 			}
 		}
-		else if (sin(start) < 0)
+		else if (all->ray->is_down)
 		{
 			y_hor = round_down(all->player->y / SCALE) * SCALE + SCALE;
 			x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
 			x_diff = SCALE / tan(start);
-			while (y_hor / SCALE > 0 && y_hor / SCALE < all->win->map_y && 
-				x_hor / SCALE > 0 && x_hor / SCALE < all->win->map_x && 
+			x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
+			x_diff *= (all->ray->is_right && x_diff < 0) ? -1 : 1;
+			while (y_hor / SCALE >= 0 && y_hor / SCALE < all->win->map_y && 
+				x_hor / SCALE >= 0 && x_hor / SCALE < all->win->map_x && 
 				all->map[(int)(y_hor / SCALE)][(int)(x_hor / SCALE)] != '1')
 			{
 				y_hor += SCALE;
@@ -151,29 +174,30 @@ double	vertical_intersection(t_all *all, double start)
 
 	x_vert = 0;
 	y_vert = 0;
-	if (1)
-	{
-		if (cos(start) > 0)	//checking vertical intersections
+		if (all->ray->is_right)	//checking vertical intersections
 		{
 			x_vert = round_down(all->player->x / SCALE) * SCALE + SCALE;
 			y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
 			y_diff = SCALE * tan(start);
-			while (y_vert / SCALE > 0 && y_vert / SCALE < all->win->map_y && 
-				x_vert / SCALE > 0 && x_vert / SCALE < all->win->map_x &&
+			y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
+			y_diff *= (all->ray->is_down && y_diff < 0) ? -1 : 1; 
+			while (y_vert / SCALE >= 0 && y_vert / SCALE < all->win->map_y && 
+				x_vert / SCALE >= 0 && x_vert / SCALE < all->win->map_x &&
 				all->map[(int)(y_vert / SCALE)][(int)(x_vert / SCALE)] != '1')
 			{
 				x_vert += SCALE;
 				y_vert += y_diff;
-				//printf("y_vert = %20f x_vert = %20f\n", y_vert / SCALE, x_vert / SCALE);
 			}
 		}
-		else if (cos(start) < 0)
+		else if (all->ray->is_left)
 		{
-			x_vert = round_down(all->player->x / SCALE) * SCALE - 0.0000001;
+			x_vert = round_down(all->player->x / SCALE) * SCALE - 0.001;
 			y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
-			y_diff = SCALE * tan(start);
-			while (y_vert / SCALE > 0 && y_vert / SCALE < all->win->map_y && 
-				x_vert / SCALE > 0 && x_vert / SCALE < all->win->map_x &&
+			y_diff = SCALE * -tan(start);
+			y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
+			y_diff *= (all->ray->is_down && y_diff < 0) ? -1 : 1; 
+			while (y_vert / SCALE >= 0 && y_vert / SCALE < all->win->map_y && 
+				x_vert / SCALE >= 0 && x_vert / SCALE < all->win->map_x &&
 				all->map[(int)(y_vert / SCALE)][(int)(x_vert / SCALE)] != '1')
 			{
 				x_vert -= SCALE;
@@ -182,7 +206,6 @@ double	vertical_intersection(t_all *all, double start)
 			}
 		}
 		return (fabs((all->player->x - x_vert) / cos(start)));
-	}
 	return (0);
 }
 
@@ -199,10 +222,11 @@ void	cast_rays(t_all *all)
 	ray = *all->player;
 	start = ray.dir - (FOV / 2);
 	end = ray.dir + (FOV / 2);
-	x_line = 0;
+	x_line = all->win->screen_x;
 
-	while (start <= end)
+	while (start <= end && x_line != 0)
 	{
+		get_ray_direction(all, start);
 		ray_hor = 0;
 		ray_vert = 0;
 		if (sin(start) != 0)
@@ -214,14 +238,15 @@ void	cast_rays(t_all *all)
 		else if (ray_hor == 0)
 			ray_len = ray_vert;
 		else
-			ray_len = (ray_hor > ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
+			ray_len = (ray_hor >= ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
 		//printf("ray_len is %24f\n", ray_len);
 		printf("start is %24f in %d line\n", start, x_line);
 
-		x_line++;
+		x_line--;
 		draw_vertical_line(all, ray_len, x_line);
 		ray.x = all->player->x;
 		ray.y = all->player->y;
+		printf("player x is %24f\nplayer y is %24f\n", all->player->x, all->player->y);
 		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
 		{
 			ray.x += cos(start);
@@ -245,13 +270,14 @@ int 	round_down(double x)
 
 void	draw_vertical_line(t_all *all, double ray_len, int x_line)
 {
-	int y, y1;
+	int y;
+	int y1;
 	double slice_height;
 	int 	color;
 
 	slice_height = 0;
 	if (ray_len != 0)
-		slice_height = (int)((SCALE / ray_len * all->win->screen_x * 0.83));
+		slice_height = (int)(SCALE / ray_len * all->player->projection_plan);
 	printf("slice_height is %24f\n", slice_height);
 	if (slice_height > all->win->screen_y)
 		slice_height = all->win->screen_y;
@@ -315,6 +341,7 @@ char	**get_map(char *config)
 	}
 	return (map1);
 }
+
 void	get_map_size(char **map, t_all *all)
 {
 	int 	x;
@@ -402,17 +429,18 @@ int 	key_press(int key, t_all *all)
 		}
 	}
 	else if (key == 2)
-		all->player->dir += 0.1;
-	else if (key == 0)
 		all->player->dir -= 0.1;
+	else if (key == 0)
+		all->player->dir += 0.1;
 	else if (key == 53)
 	{
 		printf ("%f\n", FOV);
+		printf("ppp is %d\n", all->player->projection_plan);
 		mlx_destroy_window(all->win->mlx, all->win->window);
 		exit (0);
 	}
 	draw_screen(all);
-	printf("the key is : %d\n", key);
+	//printf("the key is : %d\n", key);
 	return (0);
 }
 
@@ -445,12 +473,14 @@ int		main(int argc, char **argv)
 	t_win		win;
 	t_player	player;
 	t_all		all;
+	t_ray		ray;
 
 	
 	if (argc == 2)
 	{
 		all.player = &player;
 		all.win = &win;
+		all.ray = &ray;
 		win.mlx = mlx_init();
 		mlx_get_screen_size(win.mlx, &win.screen_x, &win.screen_y);
 		win.window = mlx_new_window(win.mlx, win.screen_x, win.screen_y, "cub3D");
@@ -459,7 +489,6 @@ int		main(int argc, char **argv)
 		all.map = to_rectangle_map(get_map(argv[1]), &all);
 		player.dir = 0;
 		player.projection_plan = (win.screen_x / 2) / (tan(FOV / 2));
-		printf("%d\n", player.projection_plan);
 		find_player(&all);
 		draw_screen(&all);
 		mlx_hook(win.window, 2, (1L << 0), &key_press, &all);
