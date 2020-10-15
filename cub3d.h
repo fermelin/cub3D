@@ -39,12 +39,6 @@ typedef	struct	s_win {
 
 typedef	struct s_player
 {
-	double			x_vert;
-	double			y_vert;
-	double			y_diff;
-	double			x_diff;
-	double			x_hor;
-	double			y_hor;
 	double			x;
 	double			y;
 	double			dir;

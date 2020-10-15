@@ -103,67 +103,51 @@ void	draw_square(t_all *all, int x, int y, char c)
 void	get_ray_direction(t_all *all, double start)
 {
 	if (cos(start) > 0)
+	{
 		all->ray->is_right = 1;
-	else
-		all->ray->is_right = 0;
-	if (cos(start) < 0)
-		all->ray->is_left = 1;
-	else
 		all->ray->is_left = 0;
+	}
+	else
+	{
+		all->ray->is_left = 1;
+		all->ray->is_right = 0;
+	}
 	if (sin(start) > 0)
+	{
 		all->ray->is_up = 1;
-	else
-		all->ray->is_up = 0;
-	if (sin(start) < 0)
-		all->ray->is_down = 1;
-	else
 		all->ray->is_down = 0;
+	}
+	else
+	{
+		all->ray->is_down = 1;
+		all->ray->is_up = 0;
+	}	
 }
+
 double	horizontal_intersection(t_all *all, double start)
 {
-	float	x_hor;
-	float	y_hor;
-	float	x_diff;
+	double	x_hor;
+	double	y_hor;
+	double	x_diff;
+	double	y_diff;
 
 	x_hor = 0;
 	y_hor = 0;
-	if (1)
+	y_hor = (int)(all->player->y / SCALE) * SCALE;
+	y_hor += (all->ray->is_up) ? -0.001 : SCALE;
+	x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
+	x_diff = SCALE / tan(start);
+	x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
+	x_diff *= (all->ray->is_right && x_diff < 0) ? -1 : 1;
+	y_diff = (all->ray->is_up) ? -SCALE : SCALE;
+	while (y_hor / SCALE >= 0 && y_hor / SCALE < all->win->map_y && 
+		x_hor / SCALE >= 0 && x_hor / SCALE < all->win->map_x && 
+		all->map[(int)(y_hor / SCALE)][(int)(x_hor / SCALE)] != '1')
 	{
-		if (all->ray->is_up)	//checking horizontal intersections
-		{
-			y_hor = round_down(all->player->y / SCALE) * SCALE - 0.001;
-			x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
-			x_diff = SCALE / tan(start);
-			x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
-			x_diff *= (all->ray->is_right && x_diff < 0) ? -1 : 1;
-			while (y_hor / SCALE >= 0 && y_hor / SCALE < all->win->map_y && 
-				x_hor / SCALE >= 0 && x_hor / SCALE < all->win->map_x && 
-				all->map[(int)(y_hor / SCALE)][(int)(x_hor / SCALE)] != '1')
-			{
-				y_hor -= SCALE;
-				x_hor += x_diff;
-				//printf("y_hor = %20f x_hor = %20f\n", y_hor / SCALE, x_hor / SCALE);
-			}
-		}
-		else if (all->ray->is_down)
-		{
-			y_hor = round_down(all->player->y / SCALE) * SCALE + SCALE;
-			x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
-			x_diff = SCALE / tan(start);
-			x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
-			x_diff *= (all->ray->is_right && x_diff < 0) ? -1 : 1;
-			while (y_hor / SCALE >= 0 && y_hor / SCALE < all->win->map_y && 
-				x_hor / SCALE >= 0 && x_hor / SCALE < all->win->map_x && 
-				all->map[(int)(y_hor / SCALE)][(int)(x_hor / SCALE)] != '1')
-			{
-				y_hor += SCALE;
-				x_hor += x_diff;
-				//printf("y_hor = %20f x_hor = %20f\n", ray.y_hor / SCALE, ray.x_hor / SCALE);
-			}
-		}
-		return(fabs((all->player->y - y_hor) / sin(start)));
+		y_hor += y_diff;
+		x_hor += x_diff;
 	}
-	return (0);
+	return(fabs((all->player->y - y_hor) / sin(start)));
 }
 
 double	vertical_intersection(t_all *all, double start)
@@ -171,42 +155,25 @@ double	vertical_intersection(t_all *all, double start)
 	double	x_vert;
 	double	y_vert;
 	double	y_diff;
+	double	x_diff;
 
 	x_vert = 0;
 	y_vert = 0;
-		if (all->ray->is_right)	//checking vertical intersections
-		{
-			x_vert = round_down(all->player->x / SCALE) * SCALE + SCALE;
-			y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
-			y_diff = SCALE * tan(start);
-			y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
-			y_diff *= (all->ray->is_down && y_diff < 0) ? -1 : 1; 
-			while (y_vert / SCALE >= 0 && y_vert / SCALE < all->win->map_y && 
-				x_vert / SCALE >= 0 && x_vert / SCALE < all->win->map_x &&
-				all->map[(int)(y_vert / SCALE)][(int)(x_vert / SCALE)] != '1')
-			{
-				x_vert += SCALE;
-				y_vert += y_diff;
-			}
-		}
-		else if (all->ray->is_left)
-		{
-			x_vert = round_down(all->player->x / SCALE) * SCALE - 0.001;
-			y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
-			y_diff = SCALE * -tan(start);
-			y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
-			y_diff *= (all->ray->is_down && y_diff < 0) ? -1 : 1; 
-			while (y_vert / SCALE >= 0 && y_vert / SCALE < all->win->map_y && 
-				x_vert / SCALE >= 0 && x_vert / SCALE < all->win->map_x &&
-				all->map[(int)(y_vert / SCALE)][(int)(x_vert / SCALE)] != '1')
-			{
-				x_vert -= SCALE;
-				y_vert += y_diff;
-				//printf("y_vert = %20f x_vert = %20f\n", y_vert / SCALE, x_vert / SCALE);
-			}
-		}
-		return (fabs((all->player->x - x_vert) / cos(start)));
-	return (0);
+	x_vert = (int)(all->player->x / SCALE) * SCALE;
+	x_vert += (all->ray->is_right) ? SCALE : -0.001;
+	y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
+	y_diff = SCALE * tan(start);
+	y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
+	y_diff *= (all->ray->is_down && y_diff < 0) ? -1 : 1;
+	x_diff = (all->ray->is_left) ? -SCALE : SCALE;
+	while (y_vert / SCALE >= 0 && y_vert / SCALE < all->win->map_y && 
+		x_vert / SCALE >= 0 && x_vert / SCALE < all->win->map_x &&
+		all->map[(int)(y_vert / SCALE)][(int)(x_vert / SCALE)] != '1')
+	{
+		x_vert += x_diff;
+		y_vert += y_diff;
+	}
+	return (fabs((all->player->x - x_vert) / cos(start)));
 }
 
 void	cast_rays(t_all *all)
@@ -238,10 +205,7 @@ void	cast_rays(t_all *all)
 		else if (ray_hor == 0)
 			ray_len = ray_vert;
 		else
-			ray_len = (ray_hor >= ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
-		//printf("ray_len is %24f\n", ray_len);
-		printf("start is %24f in %d line\n", start, x_line);
-
+			ray_len = (ray_hor > ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
 		x_line--;
 		draw_vertical_line(all, ray_len, x_line);
 		ray.x = all->player->x;
@@ -256,16 +220,6 @@ void	cast_rays(t_all *all)
 		start += (FOV) / all->win->screen_x;
 		printf("screen_x is %d\n", all->win->screen_x);
 	}
-}
-
-int 	round_down(double x)
-{
-	int x_rounded;
-
-	x_rounded = round(x);
-	if (x_rounded > x)
-		x_rounded--;
-	return (x_rounded);
 }
 
 void	draw_vertical_line(t_all *all, double ray_len, int x_line)
