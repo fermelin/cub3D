@@ -37,6 +37,17 @@ typedef	struct	s_win {
 	int			map_y;
 }				t_win;
 
+typedef struct s_texture
+{
+	void		*img;
+	char		*addr;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
+	int			width;
+	int			height;
+}				t_texture;
+
 typedef	struct s_player
 {
 	double			x;
@@ -59,6 +70,7 @@ typedef	struct s_all
 	t_win		*win;
 	t_player	*player;
 	t_ray		*ray;
+	t_texture	*texture;
 	char		**map;
 }				t_all;
 
@@ -66,8 +78,17 @@ int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
 void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
-char	**get_map(char *config);
+void	my_mlx_pixel_put_texture(t_texture *texture, int x, int y, int color);
+char	**get_map(char *config, t_all *all);
 void	draw_vertical_line(t_all *all, double ray_len, int x_line);
-int 	round_down(double x);
+void	set_background(t_all *all);
+void	get_ray_direction(t_all *all, double start);
+void	get_map_size(char **map, t_all *all);
+void	find_player(t_all *all);
+void	draw_map(t_all *all);
+void	draw_player(t_all *all);
+void	cast_rays(t_all *all);
+int 	key_press(int key, t_all *all);
+int		draw_screen(t_all *all);
 
 #endif

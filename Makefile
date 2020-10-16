@@ -12,7 +12,7 @@
 
 NAME = cub3d
 CC = gcc
-SRC = main.c 
+SRC = main.c cub3d_utils.c get_config.c draw_map.c ray_casting.c player.c
 HDR = cub3d.h
 LIBFTDIR = ./libft
 CFLAGS = -Wall -Werror -Wextra -g
