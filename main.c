@@ -11,29 +11,39 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <stdio.h>
+#include <stdio.h> //deletedeletedeletedeletedeletedeeltedeletedeletedeleteedleteeldeetledeeltedelet
+
 
 void	draw_vertical_line(t_all *all, double ray_len, int x_line)
 {
-	int y;
-	int y1;
-	double slice_height;
+	int 	y;
+	int 	y1;
+	double 	slice_height;
 	int 	color;
+	double	ray_intersection;
+	double	step_y;
+	int 	i;
+	int 	texture_x;
 
 	slice_height = 0;
+	i = 0;
+	ray_intersection = (all->ray->what_intersection == 0) ? all->ray->intersection_x : all->ray->intersection_y;
+	texture_x = (int)ray_intersection % all->texture->width;
 	if (ray_len != 0)
 		slice_height = (int)(SCALE / ray_len * all->player->projection_plan);
 	//printf("slice_height is %24f\n", slice_height);
 	if (slice_height > all->win->screen_y)
 		slice_height = all->win->screen_y;
 	//color = 0xFFFFFF - 0x10101 * (int)(ray_len / SCALE * 8);
-	color = *(all->texture->addr + (all->texture->height * all->texture->line_length + all->texture->width * (all->texture->bits_per_pixel / 8)));
+	step_y = all->texture->height / (slice_height); 
 	y = ((all->win->screen_y - slice_height) / 2);
 	y1 = all->win->screen_y - y;
 	while (y < y1)
 	{
+		color = *(all->texture->addr + ((int)(step_y * i) * all->texture->line_length + texture_x * (all->texture->bits_per_pixel / 8)));
 		my_mlx_pixel_put(all->win, x_line, y, color);
 		y++;
+		i++;
 	}
 }
 
@@ -42,19 +52,14 @@ int		draw_screen(t_all *all)
 	set_background(all);
 	cast_rays(all);
 	draw_map(all);
-	draw_player(all);
 	mlx_put_image_to_window(all->win->mlx, all->win->window, all->win->img, 0, 0);
 	return (0);
 }
 
 void	get_textures(t_all *all)
 {
-	//int fd;
-
-	//fd = open("./textures/bluestone.xpm", O_RDONLY);
-	all->texture->img = mlx_xpm_file_to_image(all->win->mlx, "./textures/bluestone.xpm", &all->texture->width, &all->texture->height);
+	all->texture->img = mlx_xpm_file_to_image(all->win->mlx, "./textures/redbrick.xpm", &all->texture->width, &all->texture->height);
 	all->texture->addr = mlx_get_data_addr(all->texture->img, &all->texture->bits_per_pixel, &all->texture->line_length, &all->texture->endian);
-
 }
 
 // t_all	struct_init(void)

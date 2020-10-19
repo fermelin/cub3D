@@ -21,13 +21,13 @@ void	my_mlx_pixel_put(t_win *win, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void	my_mlx_pixel_put_texture(t_texture *texture, int x, int y, int color)
-{
-	char	*dst;
+// void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color)
+// {
+// 	int	*dst;
 
-	dst = texture->addr + (y * texture->line_length + x * (texture->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
+// 	dst = all->texture->addr + (y * all->texture->line_length + x * (all->texture->bits_per_pixel / 8));
+// 	*(unsigned int*)dst = color;
+// }
 
 void	set_background(t_all *all)
 {

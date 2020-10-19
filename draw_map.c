@@ -13,6 +13,29 @@
 
 #include "cub3d.h"
 
+void	draw_bun_of_rays(t_all *all)
+{
+	t_player 	ray;
+	double		start;
+	double		end;
+	
+	ray = *all->player;
+	start = ray.dir - (FOV / 2);
+	end = ray.dir + (FOV / 2);
+	while(start <= end)
+	{
+		ray.x = all->player->x;
+		ray.y = all->player->y;
+		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
+		{
+			ray.x += cos(start);
+			ray.y -= sin(start);	
+			my_mlx_pixel_put(all->win, ray.x, ray.y, 0x00FF0000);
+		}
+		start += (FOV) / all->win->screen_x;
+	}
+}
+
 void	draw_map(t_all *all)
 {
 	int x;
@@ -20,8 +43,6 @@ void	draw_map(t_all *all)
 
 	x = 0;
 	y = 0;
-	
-
     while (all->map[y])
     {
         x = 0;
@@ -33,6 +54,8 @@ void	draw_map(t_all *all)
         }
         y++;
     }
+    draw_bun_of_rays(all);
+    draw_player(all);
 }
 
 void	draw_square(t_all *all, int x, int y, char c)

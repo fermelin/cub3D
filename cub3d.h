@@ -63,6 +63,9 @@ typedef struct s_ray
 	int			is_right;
 	int			is_up;
 	int			is_down;
+	double		intersection_x;
+	double		intersection_y;
+	int 		what_intersection;
 }				t_ray;
 
 typedef	struct s_all
@@ -78,7 +81,7 @@ int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
 void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
-void	my_mlx_pixel_put_texture(t_texture *texture, int x, int y, int color);
+void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
 char	**get_map(char *config, t_all *all);
 void	draw_vertical_line(t_all *all, double ray_len, int x_line);
 void	set_background(t_all *all);

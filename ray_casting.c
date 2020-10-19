@@ -35,6 +35,7 @@ static double	horizontal_intersection(t_all *all, double start)
 		y_hor += y_diff;
 		x_hor += x_diff;
 	}
+	all->ray->intersection_x = x_hor;
 	return(fabs((all->player->y - y_hor) / sin(start)));
 }
 
@@ -61,12 +62,12 @@ static double	vertical_intersection(t_all *all, double start)
 		x_vert += x_diff;
 		y_vert += y_diff;
 	}
+	all->ray->intersection_y = y_vert;
 	return (fabs((all->player->x - x_vert) / cos(start)));
 }
 
 void	cast_rays(t_all *all)
 {
-	t_player ray;
 	double	start;
 	double	end;
 	double 	ray_len;
@@ -74,16 +75,16 @@ void	cast_rays(t_all *all)
 	double	ray_hor;
 	double	ray_vert;
 	
-	ray = *all->player;
-	start = ray.dir - (FOV / 2);
-	end = ray.dir + (FOV / 2);
+	start = all->player->dir - (FOV / 2);
+	end = all->player->dir + (FOV / 2);
 	x_line = all->win->screen_x;
-
 	while (start <= end && x_line != 0)
 	{
 		get_ray_direction(all, start);
+		all->ray->what_intersection = 0;
 		ray_hor = 0;
 		ray_vert = 0;
+
 		if (sin(start) != 0)
 			ray_hor = horizontal_intersection(all, start);
 		if (cos(start) != 0)
@@ -91,21 +92,17 @@ void	cast_rays(t_all *all)
 		if (ray_vert == 0)
 			ray_len = ray_hor;
 		else if (ray_hor == 0)
+		{
 			ray_len = ray_vert;
+			all->ray->what_intersection = 1;
+		}
 		else
+		{
 			ray_len = (ray_hor > ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
+			all->ray->what_intersection = (ray_hor > ray_vert) ? 1 : 0;
+		}
 		x_line--;
 		draw_vertical_line(all, ray_len, x_line);
-		ray.x = all->player->x;
-		ray.y = all->player->y;
-		//printf("player x is %24f\nplayer y is %24f\n", all->player->x, all->player->y);
-		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
-		{
-			ray.x += cos(start);
-			ray.y -= sin(start);	
-			my_mlx_pixel_put(all->win, ray.x, ray.y, 0x00FF0000);
-		}
 		start += (FOV) / all->win->screen_x;
-		//printf("screen_x is %d\n", all->win->screen_x);
 	}
 }
