@@ -12,10 +12,17 @@
 
 NAME = cub3d
 CC = gcc
-SRC = main.c cub3d_utils.c get_config.c draw_map.c ray_casting.c player.c
+SRC = 	src/main.c \
+		src/cub3d_utils.c \
+		src/get_config.c \
+		src/draw_map.c \
+		src/ray_casting.c \
+		src/player.c \
+		src/parser.c
+
 HDR = cub3d.h
 LIBFTDIR = ./libft
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -I.
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

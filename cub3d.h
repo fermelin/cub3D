@@ -18,10 +18,17 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <mlx.h>
+#include <stdio.h>
 #include "libft.h"
+//#include "errors.h"
 
-#define SCALE 30
+#define SCALE 40
 #define FOV M_PI / 3
+
+// enum name
+// {
+	
+// };
 
 typedef	struct	s_win {
 	void		*mlx;
@@ -40,12 +47,14 @@ typedef	struct	s_win {
 typedef struct s_texture
 {
 	void		*img;
-	char		*addr;
+	int 		*addr;
 	int			bits_per_pixel;
 	int			line_length;
 	int			endian;
 	int			width;
 	int			height;
+	char		*path;
+
 }				t_texture;
 
 typedef	struct s_player
@@ -54,7 +63,6 @@ typedef	struct s_player
 	double			y;
 	double			dir;
 	int				projection_plan;
-
 }				t_player;
 
 typedef struct s_ray
@@ -73,7 +81,7 @@ typedef	struct s_all
 	t_win		*win;
 	t_player	*player;
 	t_ray		*ray;
-	t_texture	*texture;
+	t_texture	tex[4];
 	char		**map;
 }				t_all;
 
@@ -82,7 +90,7 @@ int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
-char	**get_map(char *config, t_all *all);
+char	**get_map(t_all *all, int fd);
 void	draw_vertical_line(t_all *all, double ray_len, int x_line);
 void	set_background(t_all *all);
 void	get_ray_direction(t_all *all, double start);
@@ -93,5 +101,6 @@ void	draw_player(t_all *all);
 void	cast_rays(t_all *all);
 int 	key_press(int key, t_all *all);
 int		draw_screen(t_all *all);
+void	parser(char *argv, t_all *all);
 
 #endif
