@@ -18,15 +18,17 @@ void	draw_bun_of_rays(t_all *all)
 	t_player 	ray;
 	double		start;
 	double		end;
+	int 		scale;
 	
+	scale = (all->win->screen_x + all->win->screen_y) / 2 / 100;
 	ray = *all->player;
 	start = ray.dir - (FOV / 2);
 	end = ray.dir + (FOV / 2);
 	while(start <= end)
 	{
-		ray.x = all->player->x;
-		ray.y = all->player->y;
-		while (all->map[(int)(ray.y / SCALE)][(int)(ray.x / SCALE)] != '1')
+		ray.x = all->player->x / SCALE * scale;
+		ray.y = all->player->y / SCALE * scale;
+		while (all->map[(int)(ray.y / scale)][(int)(ray.x / scale)] != '1')
 		{
 			ray.x += cos(start);
 			ray.y -= sin(start);	
@@ -60,13 +62,13 @@ void	draw_map(t_all *all)
 
 void	draw_square(t_all *all, int x, int y, char c)
 {
-	int x1, y1, x_begin;
+	int x1, y1, x_begin, scale;
 
-	y1 = 0;
-	x *= SCALE;
-	y *= SCALE;
-	y1 = y + SCALE;
-	x1 = x + SCALE;
+	scale = (all->win->screen_x + all->win->screen_y) / 2 / 100;
+	x *= scale;
+	y *= scale;
+	y1 = y + scale;
+	x1 = x + scale;
 	
 	x_begin = x;
 	while (y < y1)
@@ -84,12 +86,13 @@ void	draw_square(t_all *all, int x, int y, char c)
 
 void	draw_player(t_all *all)
 {
-	int x1, y1, x_begin, x, y;
+	int x1, y1, x_begin, x, y, scale;
 
-	x1 = all->player->x + SCALE / 2;
-	y1 = all->player->y + SCALE / 2;
-	x = all->player->x - SCALE / 2;
-	y = all->player->y - SCALE / 2;
+	scale = (all->win->screen_x + all->win->screen_y) / 2 / 100;
+	x1 = all->player->x / SCALE * scale + scale / 2;
+	y1 = all->player->y / SCALE * scale + scale / 2;
+	x = all->player->x / SCALE * scale - scale / 2;
+	y = all->player->y / SCALE * scale - scale / 2;
 	x_begin = x;
 	while (y < y1)
 	{

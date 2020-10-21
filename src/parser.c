@@ -21,9 +21,10 @@ static int		find_all_texture_paths(t_all *all)
 	printf("1 is %s\n", all->tex[1].path);
 	printf("2 is %s\n", all->tex[2].path);
 	printf("3 is %s\n", all->tex[3].path);
+	printf("3 is %s\n", all->tex[4].path);
 	while (all->tex[i].path && (*(all->tex[i].path) == '.' || *(all->tex[i].path) == '/'))
 		i++;
-	if (i == 4)
+	if (i == 5)
 		return (1);
 	return (0);
 }
@@ -37,7 +38,7 @@ void	parser(char *argv, t_all *all)
 	fd = open(argv, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)//EA NO WE SO
 	{
-		words = NULL;
+		//words = NULL;
 		if (ft_strncmp(line, "EA", 2) == 0)
 		{
 			words = ft_split(line, ' ');
@@ -77,6 +78,16 @@ void	parser(char *argv, t_all *all)
 				words++;
 			}
 			all->tex[3].path = *words;
+		}
+		else if (ft_strncmp(line, "S", 1) == 0)
+		{
+			words = ft_split(line, ' ');
+			while (*(words + 1))
+			{
+				//free();
+				words++;
+			}
+			all->tex[4].path = *words;
 		}
 		else
 			free(line);

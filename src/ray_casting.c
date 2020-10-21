@@ -66,43 +66,48 @@ static double	vertical_intersection(t_all *all, double start)
 	return (fabs((all->player->x - x_vert) / cos(start)));
 }
 
-void	cast_rays(t_all *all)
+static void		get_ray_len(t_all *all, double start)
+{
+	double	ray_hor;
+	double	ray_vert;
+
+	ray_hor = 0;
+	ray_vert = 0;
+	all->ray->what_intersection = 0;
+	if (all->ray->is_up || all->ray->is_down)
+		ray_hor = horizontal_intersection(all, start);
+	if (all->ray->is_left || all->ray->is_right)
+		ray_vert = vertical_intersection(all, start);
+	if (ray_vert == 0)
+		all->ray->ray_len = ray_hor;
+	else if (ray_hor == 0)
+	{
+		all->ray->ray_len = ray_vert;
+		all->ray->what_intersection = 1;
+	}
+	else
+	{
+		all->ray->ray_len = (ray_vert < ray_hor) ? (ray_vert * cos(start - 
+			all->player->dir)) : (ray_hor * cos(start - all->player->dir));
+		all->ray->what_intersection = (ray_vert < ray_hor) ? 1 : 0;
+	}
+}
+
+void		draw_scene(t_all *all)
 {
 	double	start;
 	double	end;
-	double 	ray_len;
 	int 	x_line;
-	double	ray_hor;
-	double	ray_vert;
-	
+
 	start = all->player->dir - (FOV / 2);
 	end = all->player->dir + (FOV / 2);
 	x_line = all->win->screen_x;
 	while (start <= end && x_line != 0)
 	{
 		get_ray_direction(all, start);
-		all->ray->what_intersection = 0;
-		ray_hor = 0;
-		ray_vert = 0;
-
-		if (sin(start) != 0)
-			ray_hor = horizontal_intersection(all, start);
-		if (cos(start) != 0)
-			ray_vert = vertical_intersection(all, start);
-		if (ray_vert == 0)
-			ray_len = ray_hor;
-		else if (ray_hor == 0)
-		{
-			ray_len = ray_vert;
-			all->ray->what_intersection = 1;
-		}
-		else
-		{
-			ray_len = (ray_hor > ray_vert) ? (ray_vert * cos(start - all->player->dir)) : (ray_hor * cos(start - all->player->dir));
-			all->ray->what_intersection = (ray_hor > ray_vert) ? 1 : 0;
-		}
+		get_ray_len(all, start);
 		x_line--;
-		draw_vertical_line(all, ray_len, x_line);
+		draw_vertical_line(all, x_line);
 		start += (FOV) / all->win->screen_x;
 	}
 }

@@ -21,14 +21,6 @@ void	my_mlx_pixel_put(t_win *win, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-// void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color)
-// {
-// 	int	*dst;
-
-// 	dst = all->texture->addr + (y * all->texture->line_length + x * (all->texture->bits_per_pixel / 8));
-// 	*(unsigned int*)dst = color;
-// }
-
 void	set_background(t_all *all)
 {
 	int x,y;
@@ -64,26 +56,18 @@ void	set_background(t_all *all)
 
 void	get_ray_direction(t_all *all, double start)
 {
+	all->ray->is_right = 0;
+	all->ray->is_left = 0;
+	all->ray->is_up = 0;
+	all->ray->is_down = 0;
 	if (cos(start) > 0)
-	{
 		all->ray->is_right = 1;
-		all->ray->is_left = 0;
-	}
-	else
-	{
+	else if (cos(start) < 0)
 		all->ray->is_left = 1;
-		all->ray->is_right = 0;
-	}
 	if (sin(start) > 0)
-	{
 		all->ray->is_up = 1;
-		all->ray->is_down = 0;
-	}
-	else
-	{
+	else if (sin(start) < 0)
 		all->ray->is_down = 1;
-		all->ray->is_up = 0;
-	}	
 }
 
 void	get_map_size(char **map, t_all *all)

@@ -22,13 +22,8 @@
 #include "libft.h"
 //#include "errors.h"
 
-#define SCALE 40
+#define SCALE 64
 #define FOV M_PI / 3
-
-// enum name
-// {
-	
-// };
 
 typedef	struct	s_win {
 	void		*mlx;
@@ -73,15 +68,38 @@ typedef struct s_ray
 	int			is_down;
 	double		intersection_x;
 	double		intersection_y;
+	double		ray_len;
 	int 		what_intersection;
+	int 		*length_array;
 }				t_ray;
+
+typedef struct s_sprite
+{
+	double 		x;
+	double 		y;
+	double		dist;
+	int 		amount;
+}				t_sprite;
+
+typedef struct s_movement
+{
+	int 		up;
+	int 		down;
+	int 		left;
+	int 		right;
+	int 		rot_left;
+	int 		rot_right;
+}				t_movement;
 
 typedef	struct s_all
 {
 	t_win		*win;
 	t_player	*player;
 	t_ray		*ray;
-	t_texture	tex[4];
+	t_texture	tex[5];
+	t_sprite	*sprite;
+	int 		sprites_amount;
+	t_movement	movements;
 	char		**map;
 }				t_all;
 
@@ -91,16 +109,19 @@ void    draw_square(t_all *all, int x, int y, char c);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
 char	**get_map(t_all *all, int fd);
-void	draw_vertical_line(t_all *all, double ray_len, int x_line);
+void	draw_vertical_line(t_all *all, int x_line);
 void	set_background(t_all *all);
 void	get_ray_direction(t_all *all, double start);
 void	get_map_size(char **map, t_all *all);
 void	find_player(t_all *all);
 void	draw_map(t_all *all);
 void	draw_player(t_all *all);
-void	cast_rays(t_all *all);
+void	draw_scene(t_all *all);
 int 	key_press(int key, t_all *all);
 int		draw_screen(t_all *all);
 void	parser(char *argv, t_all *all);
+int		player_movement(t_all *all);
+int		key_release(int key, t_all *all);
+
 
 #endif
