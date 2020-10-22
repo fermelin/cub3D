@@ -78,7 +78,6 @@ typedef struct s_sprite
 	double 		x;
 	double 		y;
 	double		dist;
-	int 		amount;
 }				t_sprite;
 
 typedef struct s_movement
@@ -91,6 +90,14 @@ typedef struct s_movement
 	int 		rot_right;
 }				t_movement;
 
+typedef struct s_wall
+{
+	int 		is_left;
+	int 		is_right;
+	int 		is_up;
+	int 		is_down;
+}				t_wall;
+
 typedef	struct s_all
 {
 	t_win		*win;
@@ -100,6 +107,7 @@ typedef	struct s_all
 	t_sprite	*sprite;
 	int 		sprites_amount;
 	t_movement	movements;
+	t_wall 		walls;
 	char		**map;
 }				t_all;
 
@@ -122,6 +130,7 @@ int		draw_screen(t_all *all);
 void	parser(char *argv, t_all *all);
 int		player_movement(t_all *all);
 int		key_release(int key, t_all *all);
-
+void	get_sprites_xy(t_all *all);
+void	sprites_counter(t_all *all);
 
 #endif

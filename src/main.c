@@ -67,6 +67,7 @@ void	draw_vertical_line(t_all *all, int x_line)
 
 int		draw_screen(t_all *all)
 {
+	
 	set_background(all);
 	draw_scene(all);
 	draw_map(all);
@@ -129,8 +130,8 @@ int		main(int argc, char **argv)
 		win.window = mlx_new_window(win.mlx, win.screen_x, win.screen_y, "cub3D");
 		win.img = mlx_new_image(win.mlx, win.screen_x, win.screen_y);
 		win.addr = mlx_get_data_addr(win.img, &win.bits_per_pixel, &win.line_length, &win.endian);
-
-		//all.map = get_map(argv[1], &all);
+		mlx_do_key_autorepeaton(win.mlx); //надо ли?
+		mlx_do_sync(win.mlx); //надо ли?
 		parser(argv[1], &all);
 		all.player->projection_plan = (win.screen_x / 2) / (tan(FOV / 2));
 		find_player(&all);

@@ -18,7 +18,8 @@ SRC = 	src/main.c \
 		src/draw_map.c \
 		src/ray_casting.c \
 		src/player.c \
-		src/parser.c
+		src/parser.c \
+		src/sprites.c
 
 HDR = cub3d.h
 LIBFTDIR = ./libft

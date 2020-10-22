@@ -36,7 +36,7 @@ void	parser(char *argv, t_all *all)
 	int 	fd;
 
 	fd = open(argv, O_RDONLY);
-	while (get_next_line(fd, &line) > 0)//EA NO WE SO
+	while (get_next_line(fd, &line) > 0)//EA = 0 NO = 1 WE = 2 SO = 3 S = 4
 	{
 		//words = NULL;
 		if (ft_strncmp(line, "EA", 2) == 0)
@@ -96,4 +96,6 @@ void	parser(char *argv, t_all *all)
 			break ;
 	}
 	all->map = get_map(all, fd);
+	sprites_counter(all);
+	get_sprites_xy(all);
 }
