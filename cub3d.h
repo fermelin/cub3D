@@ -57,6 +57,12 @@ typedef	struct s_player
 	double			x;
 	double			y;
 	double			dir;
+	int 			is_dir_left;
+	int 			is_dir_right;
+	int 			is_dir_up;
+	int 			is_dir_down;
+	double			sin_dir;
+	double			cos_dir;
 	int				projection_plan;
 }				t_player;
 
@@ -78,6 +84,7 @@ typedef struct s_sprite
 	double 		x;
 	double 		y;
 	double		dist;
+	double		dir;
 }				t_sprite;
 
 typedef struct s_movement
@@ -98,6 +105,20 @@ typedef struct s_wall
 	int 		is_down;
 }				t_wall;
 
+typedef struct s_parsing
+{
+	int 		no_tex;
+	int 		ea_tex;
+	int 		we_tex;
+	int 		so_tex;
+	int 		s_tex;
+	int 		resolution;
+	int 		is_floor;
+	int 		is_ceiling;
+	int 		floor;
+	int 		ceiling;
+}				t_parsing;
+
 typedef	struct s_all
 {
 	t_win		*win;
@@ -108,6 +129,7 @@ typedef	struct s_all
 	int 		sprites_amount;
 	t_movement	movements;
 	t_wall 		walls;
+	t_parsing	parsing;
 	char		**map;
 }				t_all;
 

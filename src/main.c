@@ -106,6 +106,12 @@ void	struct_init(t_all *all)
 	all->movements.right = 0;
 	all->movements.rot_left = 0;
 	all->movements.rot_right = 0;
+	all->parsing.no_tex = 0;
+	all->parsing.ea_tex = 0;
+	all->parsing.we_tex = 0;
+	all->parsing.so_tex = 0;
+	all->parsing.s_tex = 0;
+	all->parsing.resolution = 0;
 }
 
 int		main(int argc, char **argv)
@@ -127,12 +133,12 @@ int		main(int argc, char **argv)
 
 		win.mlx = mlx_init();
 		mlx_get_screen_size(win.mlx, &win.screen_x, &win.screen_y);
+		parser(argv[1], &all);
 		win.window = mlx_new_window(win.mlx, win.screen_x, win.screen_y, "cub3D");
 		win.img = mlx_new_image(win.mlx, win.screen_x, win.screen_y);
 		win.addr = mlx_get_data_addr(win.img, &win.bits_per_pixel, &win.line_length, &win.endian);
 		mlx_do_key_autorepeaton(win.mlx); //надо ли?
 		mlx_do_sync(win.mlx); //надо ли?
-		parser(argv[1], &all);
 		all.player->projection_plan = (win.screen_x / 2) / (tan(FOV / 2));
 		find_player(&all);
 		get_textures(&all);
