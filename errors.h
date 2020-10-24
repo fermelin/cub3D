@@ -14,3 +14,5 @@
 # define ERRORS_H
 
 # define EMAP Invalid map
+
+#endif

@@ -48,10 +48,10 @@ void	draw_map(t_all *all)
     while (all->map[y])
     {
         x = 0;
-        while (all->map[y][x] && x < all->win->map_x)
+        while (all->map[y][x])
         {
-            if (all->map[y][x] > '0' && all->map[y][x] < '3')
-			   draw_square(all, x, y, all->map[y][x]);
+            if (all->map[y][x] == '1')
+			   draw_square(all, x, y);
             x++;
         }
         y++;
@@ -60,9 +60,10 @@ void	draw_map(t_all *all)
     draw_player(all);
 }
 
-void	draw_square(t_all *all, int x, int y, char c)
+void	draw_square(t_all *all, int x, int y)
 {
 	int x1, y1, x_begin, scale;
+	printf("%d\n", x);
 
 	scale = (all->win->screen_x + all->win->screen_y) / 2 / 100;
 	x *= scale;
@@ -76,8 +77,7 @@ void	draw_square(t_all *all, int x, int y, char c)
 		x = x_begin;
 		while (x < x1)
 		{
-			if (c == '1')
-				my_mlx_pixel_put(all->win, x, y, 0x8A2BE2);
+			my_mlx_pixel_put(all->win, x, y, 0x8A2BE2);
         	x++;
         }
         y++;

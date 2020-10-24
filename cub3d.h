@@ -20,7 +20,7 @@
 #include <mlx.h>
 #include <stdio.h>
 #include "libft.h"
-//#include "errors.h"
+#include "errors.h"
 
 #define SCALE 64
 #define FOV M_PI / 3
@@ -63,7 +63,7 @@ typedef	struct s_player
 	int 			is_dir_down;
 	double			sin_dir;
 	double			cos_dir;
-	int				projection_plan;
+	int				projection_plane;
 }				t_player;
 
 typedef struct s_ray
@@ -76,7 +76,7 @@ typedef struct s_ray
 	double		intersection_y;
 	double		ray_len;
 	int 		what_intersection;
-	int 		*length_array;
+	double 		*array_lens;
 }				t_ray;
 
 typedef struct s_sprite
@@ -84,7 +84,11 @@ typedef struct s_sprite
 	double 		x;
 	double 		y;
 	double		dist;
-	double		dir;
+	double		angle;
+	double		delta_angle;
+	double		hor_offset;
+	double		vert_offset;
+	int			size;
 }				t_sprite;
 
 typedef struct s_movement
@@ -135,7 +139,7 @@ typedef	struct s_all
 
 int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
-void    draw_square(t_all *all, int x, int y, char c);
+void    draw_square(t_all *all, int x, int y);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
 char	**get_map(t_all *all, int fd);
@@ -154,5 +158,8 @@ int		player_movement(t_all *all);
 int		key_release(int key, t_all *all);
 void	get_sprites_xy(t_all *all);
 void	sprites_counter(t_all *all);
+void	get_sprites_params(t_all *all, int i);
+void	draw_sprites(t_all *all);
+void	sort_sprites(t_all *all);
 
 #endif

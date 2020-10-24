@@ -156,7 +156,7 @@ int 	key_press(int key, t_all *all)
 		exit (0);
 	}
 	//draw_screen(all);
-	printf("pressed key is : %d\n", key);
+	// printf("pressed key is : %d\n", key);
 	return (0);
 }
 
@@ -174,7 +174,7 @@ int		key_release(int key, t_all *all)
 		all->movements.left = 0;
 	else if (key == 2)
 		all->movements.right = 0;
-	printf("released key is : %d\n", key);
+	// printf("released key is : %d\n", key);
 	return (0);
 
 }

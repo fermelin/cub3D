@@ -52,7 +52,8 @@ char	**get_map(t_all *all, int fd)
 	//fd = open(config, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 		ft_lstadd_back(&map, ft_lstnew(line));
-	free(line);
+	ft_lstadd_back(&map, ft_lstnew(line));
+	//free(line);
 	i = ft_lstsize(map);
 	if (!(map1 = (char **)malloc(sizeof(char *) * (i + 1))))
 		return (NULL);

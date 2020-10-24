@@ -98,14 +98,20 @@ void		draw_scene(t_all *all)
 	double	start;
 	double	end;
 	int 	x_line;
-
+	
+	while (all->player->dir >= 2 * M_PI)
+		all->player->dir -= 2 * M_PI;
+	while (all->player->dir <= -2 * M_PI)
+		all->player->dir += 2 * M_PI;
 	start = all->player->dir - (FOV / 2);
 	end = all->player->dir + (FOV / 2);
 	x_line = all->win->screen_x;
+	
 	while (start <= end && x_line != 0)
 	{
 		get_ray_direction(all, start);
 		get_ray_len(all, start);
+		all->ray->array_lens[x_line] = all->ray->ray_len;
 		x_line--;
 		draw_vertical_line(all, x_line);
 		start += (FOV) / all->win->screen_x;

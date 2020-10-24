@@ -46,7 +46,7 @@ void	draw_vertical_line(t_all *all, int x_line)
 	txt_nbr = choose_texture(all);
 	texture_x = (int)ray_intersection % SCALE % (all->tex[txt_nbr].width);
 	if (all->ray->ray_len != 0)
-		slice_height = (int)(SCALE * all->player->projection_plan / all->ray->ray_len);
+		slice_height = (int)(SCALE * all->player->projection_plane / all->ray->ray_len);
 	if (slice_height > all->win->screen_y)
 	{
 		i = (slice_height - all->win->screen_y) / 2;
@@ -70,6 +70,7 @@ int		draw_screen(t_all *all)
 	
 	set_background(all);
 	draw_scene(all);
+	draw_sprites(all);
 	draw_map(all);
 	mlx_put_image_to_window(all->win->mlx, all->win->window, all->win->img, 0, 0);
 	return (0);
@@ -100,6 +101,7 @@ void	struct_init(t_all *all)
 		all->tex[i].addr = NULL;
 		i++;
 	}
+
 	all->movements.up = 0;
 	all->movements.down = 0;
 	all->movements.left = 0;
@@ -139,9 +141,12 @@ int		main(int argc, char **argv)
 		win.addr = mlx_get_data_addr(win.img, &win.bits_per_pixel, &win.line_length, &win.endian);
 		mlx_do_key_autorepeaton(win.mlx); //надо ли?
 		mlx_do_sync(win.mlx); //надо ли?
-		all.player->projection_plan = (win.screen_x / 2) / (tan(FOV / 2));
+		if (!(ray.array_lens = (double*)malloc(sizeof(double) * (win.screen_x + 1))))
+			return (0);
+		all.player->projection_plane = (win.screen_x / 2) / (tan(FOV / 2));
 		find_player(&all);
 		get_textures(&all);
+		printf("%d\n", all.win->map_y);
 		// draw_screen(&all);
 		mlx_hook(win.window, 2, (1L << 0), &key_press, &all);
 		mlx_hook(win.window, 3, (1L << 1), &key_release, &all);
