@@ -75,8 +75,8 @@ typedef struct s_ray
 	double		intersection_x;
 	double		intersection_y;
 	double		ray_len;
+	double		ray_fixed;
 	int 		what_intersection;
-	double 		*array_lens;
 }				t_ray;
 
 typedef struct s_sprite
@@ -135,6 +135,7 @@ typedef	struct s_all
 	t_wall 		walls;
 	t_parsing	parsing;
 	char		**map;
+	int 		minimap_scale;
 }				t_all;
 
 int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
@@ -143,7 +144,7 @@ void    draw_square(t_all *all, int x, int y);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
 char	**get_map(t_all *all, int fd);
-void	draw_vertical_line(t_all *all, int x_line);
+void	draw_vertical_line(t_all *all, int x_line, double start);
 void	set_background(t_all *all);
 void	get_ray_direction(t_all *all, double start);
 void	get_map_size(char **map, t_all *all);
@@ -158,8 +159,8 @@ int		player_movement(t_all *all);
 int		key_release(int key, t_all *all);
 void	get_sprites_xy(t_all *all);
 void	sprites_counter(t_all *all);
-void	get_sprites_params(t_all *all, int i);
-void	draw_sprites(t_all *all);
+void	get_sprites_params(t_all *all);
+void	draw_sprites(t_all *all, int x_line);
 void	sort_sprites(t_all *all);
 
 #endif

@@ -87,8 +87,7 @@ static void		get_ray_len(t_all *all, double start)
 	}
 	else
 	{
-		all->ray->ray_len = (ray_vert < ray_hor) ? (ray_vert * cos(start - 
-			all->player->dir)) : (ray_hor * cos(start - all->player->dir));
+		all->ray->ray_len = (ray_vert < ray_hor) ? ray_vert : ray_hor;
 		all->ray->what_intersection = (ray_vert < ray_hor) ? 1 : 0;
 	}
 }
@@ -105,15 +104,16 @@ void		draw_scene(t_all *all)
 		all->player->dir += 2 * M_PI;
 	start = all->player->dir - (FOV / 2);
 	end = all->player->dir + (FOV / 2);
-	x_line = all->win->screen_x;
+	x_line = all->win->screen_x - 1;
+	get_sprites_params(all);
 	
-	while (start <= end && x_line != 0)
+	while (start <= end && x_line >= 0)
 	{
 		get_ray_direction(all, start);
 		get_ray_len(all, start);
-		all->ray->array_lens[x_line] = all->ray->ray_len;
-		x_line--;
-		draw_vertical_line(all, x_line);
+		draw_vertical_line(all, x_line, start);
+		draw_sprites(all, x_line);
 		start += (FOV) / all->win->screen_x;
+		x_line--;
 	}
 }
