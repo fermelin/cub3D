@@ -67,6 +67,11 @@ void	draw_vertical_line(t_all *all, int x_line, double start)
 	}
 }
 
+void	error_processor(void)
+{
+	perror("Invalid texture path");
+	exit(1);
+}
 int		draw_screen(t_all *all)
 {
 	
@@ -84,7 +89,10 @@ void	get_textures(t_all *all)
 	i = 0;
 	while (i < 5)
 	{
-		all->tex[i].img = mlx_xpm_file_to_image(all->win->mlx, all->tex[i].path, &all->tex[i].width, &all->tex[i].height);
+		if (!(all->tex[i].img = mlx_xpm_file_to_image(all->win->mlx, all->tex[i].path, &all->tex[i].width, &all->tex[i].height)))
+		{
+			return (error_processor());
+		}
 		all->tex[i].addr = (int*)mlx_get_data_addr(all->tex[i].img, &all->tex[i].bits_per_pixel, &all->tex[i].line_length, &all->tex[i].endian);
 		i++;
 	}
@@ -100,8 +108,11 @@ void	struct_init(t_all *all)
 		all->tex[i].path = NULL;
 		all->tex[i].img = NULL;
 		all->tex[i].addr = NULL;
+		all->parsing.tex[i] = 0;
 		i++;
 	}
+	all->parsing.is_floor = 0;
+	all->parsing.is_ceiling = 0;
 
 	all->movements.up = 0;
 	all->movements.down = 0;
@@ -109,11 +120,6 @@ void	struct_init(t_all *all)
 	all->movements.right = 0;
 	all->movements.rot_left = 0;
 	all->movements.rot_right = 0;
-	all->parsing.no_tex = 0;
-	all->parsing.ea_tex = 0;
-	all->parsing.we_tex = 0;
-	all->parsing.so_tex = 0;
-	all->parsing.s_tex = 0;
 	all->parsing.resolution = 0;
 }
 
@@ -139,6 +145,7 @@ int		main(int argc, char **argv)
 		win.mlx = mlx_init();
 		mlx_get_screen_size(win.mlx, &win.screen_x, &win.screen_y);
 		parser(argv[1], &all);
+
 		all.minimap_scale = (win.screen_x + win.screen_y) / 2 / 100;
 		win.window = mlx_new_window(win.mlx, win.screen_x, win.screen_y, "cub3D");
 		win.img = mlx_new_image(win.mlx, win.screen_x, win.screen_y);
@@ -148,6 +155,7 @@ int		main(int argc, char **argv)
 		all.player->projection_plane = (win.screen_x / 2) / (tan(FOV / 2));
 		find_player(&all);
 		get_textures(&all);
+
 		// printf("%d\n", all.win->map_y);
 		mlx_hook(win.window, 2, (1L << 0), &key_press, &all);
 		mlx_hook(win.window, 3, (1L << 1), &key_release, &all);

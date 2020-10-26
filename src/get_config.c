@@ -40,7 +40,6 @@ static char	**to_rectangle_map(char **map, t_all *all)
 
 char	**get_map(t_all *all, int fd)
 {
-	//int		fd;	
 	char	*line = NULL;
 	int 	i, j;
 	char	**map1;
@@ -49,7 +48,6 @@ char	**get_map(t_all *all, int fd)
 
 	i = j = 0;
 	map = NULL;
-	//fd = open(config, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 		ft_lstadd_back(&map, ft_lstnew(line));
 	ft_lstadd_back(&map, ft_lstnew(line));

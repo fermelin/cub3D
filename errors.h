@@ -13,6 +13,9 @@
 #ifndef ERRORS_H
 # define ERRORS_H
 
-# define EMAP Invalid map
+
+#define EPATH
+
+// # define
 
 #endif

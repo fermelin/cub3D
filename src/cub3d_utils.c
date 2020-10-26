@@ -23,34 +23,34 @@ void	my_mlx_pixel_put(t_win *win, int x, int y, int color)
 
 void	set_background(t_all *all)
 {
-	int x,y;
+	int x;
+	int y;
+
 	y = 0;
-    int color;
-    color = 0x000000FF;
     while (y < all->win->screen_y / 2)
     {
         x = 0;
         while (x < all->win->screen_x)
         {
-            my_mlx_pixel_put(all->win, x, y, color);
+            my_mlx_pixel_put(all->win, x, y, all->parsing.ceiling);
             x++;
         }
         y++;
-        if (y % 3 == 0)
-            color--;
+        // if (y % 3 == 0)
+        //     color--;
     }
-    color = 0x00000000;
+    // color = 0x00000000;
     while (y < all->win->screen_y)
     {
         x = 0;
         while (x < all->win->screen_x)
         {
-            my_mlx_pixel_put(all->win, x, y, color);
+            my_mlx_pixel_put(all->win, x, y, all->parsing.floor);
             x++;
         }
         y++;
-        if (y % 3 == 0) //исправить, чтобы зависело от разрешения экрана
-            color+= 256;
+        // if (y % 3 == 0) //исправить, чтобы зависело от разрешения экрана
+        //     color+= 256;
     }
 }
 

@@ -26,7 +26,7 @@ void	draw_bun_of_rays(t_all *all)
 	{
 		ray.x = all->player->x / SCALE * all->minimap_scale;
 		ray.y = all->player->y / SCALE * all->minimap_scale;
-		while (all->map[(int)(ray.y / all->minimap_scale)]
+		while (all->minimap_scale && all->map[(int)(ray.y / all->minimap_scale)]
 			[(int)(ray.x / all->minimap_scale)] != '1')
 		{
 			ray.x += cos(start);

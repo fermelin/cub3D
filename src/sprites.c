@@ -58,7 +58,6 @@ void	get_sprites_xy(t_all *all)
 				{
 					all->sprite[i].x = x * SCALE + SCALE / 2;
 					all->sprite[i].y = y * SCALE + SCALE / 2;
-					// printf("%d sprite.x is %f\nsprite.y is %f\n", i, all->sprite[i].x, all->sprite[i].y);
 					i++;
 				}
 				x++;
@@ -129,11 +128,15 @@ int 	get_sprite_color(t_all *all, int x_line, int y, int i)
 	int texture_x;
 	int texture_y;
 
-	texture_y = y * (all->tex[4].height - 1) / (all->sprite[i].size - 1);
-	texture_x = (x_line - all->sprite[i].hor_offset) * (all->tex[4].width - 1) / (all->sprite[i].size - 1);
-	color = *(all->tex[4].addr +(int)((int)(texture_y) * all->tex[4].line_length / sizeof(int) +
-		texture_x * (all->tex[4].bits_per_pixel / 8) / sizeof(int)));
-	return (color);
+	if (all->sprite[i].size > 1)
+	{
+		texture_y = y * (all->tex[4].height - 1) / (all->sprite[i].size - 1);
+		texture_x = (x_line - all->sprite[i].hor_offset) * (all->tex[4].width - 1) / (all->sprite[i].size - 1);
+		color = *(all->tex[4].addr +(int)((int)(texture_y) * all->tex[4].line_length / sizeof(int) +
+			texture_x * (all->tex[4].bits_per_pixel / 8) / sizeof(int)));
+		return (color);
+	}
+	return (0);
 }
 void	draw_sprites(t_all *all, int x_line)
 {

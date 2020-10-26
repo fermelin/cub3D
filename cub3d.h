@@ -21,9 +21,16 @@
 #include <stdio.h>
 #include "libft.h"
 #include "errors.h"
+#include <errno.h>
+#include <string.h>
 
-#define SCALE 64
+#define SCALE 100
 #define FOV M_PI / 3
+
+// typedef enum e_parser
+// {
+// 	EA, NO, WE, SO, S, 
+// }				;
 
 typedef	struct	s_win {
 	void		*mlx;
@@ -111,11 +118,7 @@ typedef struct s_wall
 
 typedef struct s_parsing
 {
-	int 		no_tex;
-	int 		ea_tex;
-	int 		we_tex;
-	int 		so_tex;
-	int 		s_tex;
+	int 		tex[5];
 	int 		resolution;
 	int 		is_floor;
 	int 		is_ceiling;
@@ -162,5 +165,6 @@ void	sprites_counter(t_all *all);
 void	get_sprites_params(t_all *all);
 void	draw_sprites(t_all *all, int x_line);
 void	sort_sprites(t_all *all);
+void	error_processor(void);
 
 #endif

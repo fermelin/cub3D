@@ -6,7 +6,7 @@
 /*   By: fermelin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/06 13:15:00 by fermelin          #+#    #+#             */
-/*   Updated: 2020/10/09 19:38:39 by fermelin         ###   ########.fr       */
+/*   Updated: 2020/10/26 18:31:34 by fermelin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,5 @@ void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 					void (*del)(void *));
 int					get_next_line(int fd, char **line);
+int					ft_isspace(int c);
 #endif
