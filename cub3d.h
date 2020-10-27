@@ -24,7 +24,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define SCALE 100
+#define SCALE 64
 #define FOV M_PI / 3
 
 // typedef enum e_parser
@@ -56,7 +56,7 @@ typedef struct s_texture
 	int			width;
 	int			height;
 	char		*path;
-
+	double		step_x;
 }				t_texture;
 
 typedef	struct s_player
@@ -84,6 +84,8 @@ typedef struct s_ray
 	double		ray_len;
 	double		ray_fixed;
 	int 		what_intersection;
+	double		ray_intersection;
+	int 		x_line;
 }				t_ray;
 
 typedef struct s_sprite
@@ -139,6 +141,7 @@ typedef	struct s_all
 	t_parsing	parsing;
 	char		**map;
 	int 		minimap_scale;
+	int 		screenshot;
 }				t_all;
 
 int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
@@ -147,7 +150,7 @@ void    draw_square(t_all *all, int x, int y);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
 char	**get_map(t_all *all, int fd);
-void	draw_vertical_line(t_all *all, int x_line, double start);
+void	draw_vertical_line(t_all *all, double start);
 void	set_background(t_all *all);
 void	get_ray_direction(t_all *all, double start);
 void	get_map_size(char **map, t_all *all);
@@ -163,8 +166,9 @@ int		key_release(int key, t_all *all);
 void	get_sprites_xy(t_all *all);
 void	sprites_counter(t_all *all);
 void	get_sprites_params(t_all *all);
-void	draw_sprites(t_all *all, int x_line);
+void	draw_sprites(t_all *all);
 void	sort_sprites(t_all *all);
 void	error_processor(void);
+void	make_screenshot(t_all *all);
 
 #endif

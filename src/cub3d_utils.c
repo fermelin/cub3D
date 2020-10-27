@@ -77,6 +77,7 @@ void	get_map_size(char **map, t_all *all)
 	int 	x_max;
 
 	y = 0;
+	x_max = 0;
 	while (map[y])
 	{
 		x = 0;

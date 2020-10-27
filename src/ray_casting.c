@@ -22,7 +22,7 @@ static double	horizontal_intersection(t_all *all, double start)
 	x_hor = 0;
 	y_hor = 0;
 	y_hor = (int)(all->player->y / SCALE) * SCALE;
-	y_hor += (all->ray->is_up) ? -0.001 : SCALE;
+	y_hor += (all->ray->is_up) ? -0.0001 : SCALE;
 	x_hor = all->player->x + (all->player->y - y_hor) / tan(start);
 	x_diff = SCALE / tan(start);
 	x_diff *= (all->ray->is_left && x_diff > 0) ? -1 : 1;
@@ -49,7 +49,7 @@ static double	vertical_intersection(t_all *all, double start)
 	x_vert = 0;
 	y_vert = 0;
 	x_vert = (int)(all->player->x / SCALE) * SCALE;
-	x_vert += (all->ray->is_right) ? SCALE : -0.001;
+	x_vert += (all->ray->is_right) ? SCALE : -0.0001;
 	y_vert = all->player->y + (all->player->x - x_vert) * tan(start);
 	y_diff = SCALE * tan(start);
 	y_diff *= (all->ray->is_up && y_diff > 0) ? -1 : 1;
@@ -96,7 +96,6 @@ void		draw_scene(t_all *all)
 {
 	double	start;
 	double	end;
-	int 	x_line;
 	
 	while (all->player->dir >= 2 * M_PI)
 		all->player->dir -= 2 * M_PI;
@@ -104,16 +103,16 @@ void		draw_scene(t_all *all)
 		all->player->dir += 2 * M_PI;
 	start = all->player->dir - (FOV / 2);
 	end = all->player->dir + (FOV / 2);
-	x_line = all->win->screen_x - 1;
+	all->ray->x_line = all->win->screen_x - 1;
 	get_sprites_params(all);
 	
-	while (start <= end && x_line >= 0)
+	while (start <= end && all->ray->x_line >= 0)
 	{
 		get_ray_direction(all, start);
 		get_ray_len(all, start);
-		draw_vertical_line(all, x_line, start);
-		draw_sprites(all, x_line);
+		draw_vertical_line(all, start);
+		draw_sprites(all);
 		start += (FOV) / all->win->screen_x;
-		x_line--;
+		all->ray->x_line--;
 	}
 }

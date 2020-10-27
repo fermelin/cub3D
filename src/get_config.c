@@ -23,8 +23,11 @@ static char	**to_rectangle_map(char **map, t_all *all)
 	while (y < all->win->map_y)
 	{
 		x = 0;
-		if (!(tmp = ft_calloc(1, all->win->map_x)))
+		if (!(tmp = (char*)malloc(sizeof(char) * (all->win->map_x + 1))))
 			return (NULL);
+
+		ft_memset(tmp, ' ', all->win->map_x);
+		tmp[all->win->map_x] = '\0';
 		while (map[y][x])
 		{
 			tmp[x] = map[y][x];
@@ -35,6 +38,7 @@ static char	**to_rectangle_map(char **map, t_all *all)
 		tmp = NULL;
 		y++;
 	}
+	// printf("%d\n", all->win->map_x);
 	return (map);
 }
 
@@ -66,3 +70,37 @@ char	**get_map(t_all *all, int fd)
 	}
 	return (to_rectangle_map(map1, all));
 }
+
+
+
+// void	map_horizontal_validation(t_all *all)
+// {
+// 	int x;
+// 	int y;
+
+// 	x = 0;
+// 	y = 0;
+// 	while (all->map[y])
+// 	{
+
+// 	}
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

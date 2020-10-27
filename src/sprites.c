@@ -33,7 +33,8 @@ void	sprites_counter(t_all *all) //with malloc
 	}
 	if (all->sprites_amount > 0)
 	{
-		if (!(all->sprite = (t_sprite*)malloc(sizeof(t_sprite) * all->sprites_amount)))
+		if (!(all->sprite = (t_sprite*)malloc(sizeof(t_sprite) * 
+			all->sprites_amount)))
 			return ;
 	}
 }
@@ -122,7 +123,7 @@ void	sort_sprites(t_all *all)
 }
 
 
-int 	get_sprite_color(t_all *all, int x_line, int y, int i)
+int 	get_sprite_color(t_all *all, int y, int i)
 {
 	int color;
 	int texture_x;
@@ -131,14 +132,14 @@ int 	get_sprite_color(t_all *all, int x_line, int y, int i)
 	if (all->sprite[i].size > 1)
 	{
 		texture_y = y * (all->tex[4].height - 1) / (all->sprite[i].size - 1);
-		texture_x = (x_line - all->sprite[i].hor_offset) * (all->tex[4].width - 1) / (all->sprite[i].size - 1);
+		texture_x = (all->ray->x_line - all->sprite[i].hor_offset) * (all->tex[4].width - 1) / (all->sprite[i].size - 1);
 		color = *(all->tex[4].addr +(int)((int)(texture_y) * all->tex[4].line_length / sizeof(int) +
 			texture_x * (all->tex[4].bits_per_pixel / 8) / sizeof(int)));
 		return (color);
 	}
 	return (0);
 }
-void	draw_sprites(t_all *all, int x_line)
+void	draw_sprites(t_all *all)
 {
 	int 	y;
 	int 	color;
@@ -155,14 +156,14 @@ void	draw_sprites(t_all *all, int x_line)
 			// height_diff = all->win->screen_y - all->sprite[i].size;
 			// all->sprite[i].size = all->win->screen_y;
 		}
-		if (x_line >= all->sprite[i].hor_offset && x_line <= all->sprite[i].hor_offset + all->sprite[i].size && all->sprite[i].dist < all->ray->ray_len)
+		if (all->ray->x_line >= all->sprite[i].hor_offset && all->ray->x_line <= all->sprite[i].hor_offset + all->sprite[i].size && all->sprite[i].dist < all->ray->ray_len)
 		{
 			y = 0;
 			while (y < all->sprite[i].size)
 			{
-				color = get_sprite_color(all, x_line, y, i);
+				color = get_sprite_color(all, y, i);
 				if (color != 0x0)
-					my_mlx_pixel_put(all->win, x_line, (int)(all->sprite[i].vert_offset + y), color);
+					my_mlx_pixel_put(all->win, all->ray->x_line, (int)(all->sprite[i].vert_offset + y), color);
 				y++;
 			}
 		}

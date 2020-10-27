@@ -144,6 +144,6 @@ void	parser(char *argv, t_all *all)
 	all->map = get_map(all, fd);
 	sprites_counter(all);
 	get_sprites_xy(all);
-	printf("ceiling is %x\nfloor is %x\n", all->parsing.ceiling, all->parsing.floor);
+	// printf("ceiling is %x\nfloor is %x\n", all->parsing.ceiling, all->parsing.floor);
 	close(fd);
 }
