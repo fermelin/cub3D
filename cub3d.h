@@ -168,7 +168,11 @@ void	sprites_counter(t_all *all);
 void	get_sprites_params(t_all *all);
 void	draw_sprites(t_all *all);
 void	sort_sprites(t_all *all);
-void	error_processor(void);
+void	error_processor(int errnum);
 void	make_screenshot(t_all *all);
+int		put_error(char *str);//, t_all *all);
+void	check_map_symbols(t_all *all);
+
+
 
 #endif

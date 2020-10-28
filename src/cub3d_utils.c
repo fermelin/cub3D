@@ -91,6 +91,7 @@ void	get_map_size(char **map, t_all *all)
 	}
 	all->win->map_x = x_max + 1;
 	all->win->map_y = y;
+	printf("map_y is %d\n", all->win->map_y);
 }
 
 void	find_player(t_all *all)

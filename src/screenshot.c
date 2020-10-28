@@ -52,10 +52,10 @@ int     bmp_data(int fd, t_all *all, int padsize)
             pixel = *((int*)all->win->addr + x + y * all->win->line_length / 4);
             if (write(fd, &pixel, 3) < 0)
                 return (0);
-            if (padsize > 0 && write(fd, &zero, padsize) < 0)
-                return (0);
             x++;
         }
+        if (padsize > 0 && write(fd, &zero, padsize) < 0)
+            return (0);
         y--;
     }
     return (1);

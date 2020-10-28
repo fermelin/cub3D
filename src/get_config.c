@@ -25,7 +25,6 @@ static char	**to_rectangle_map(char **map, t_all *all)
 		x = 0;
 		if (!(tmp = (char*)malloc(sizeof(char) * (all->win->map_x + 1))))
 			return (NULL);
-
 		ft_memset(tmp, ' ', all->win->map_x);
 		tmp[all->win->map_x] = '\0';
 		while (map[y][x])
@@ -42,33 +41,55 @@ static char	**to_rectangle_map(char **map, t_all *all)
 	return (map);
 }
 
-char	**get_map(t_all *all, int fd)
+static	char	**map_list_to_char(t_all *all, int y, t_list **map)
 {
-	char	*line = NULL;
-	int 	i, j;
-	char	**map1;
-	t_list	*map;
+	char	**map_char;
+	int 	i;
 	t_list	*tmp;
 
-	i = j = 0;
-	map = NULL;
-	while (get_next_line(fd, &line) > 0)
-		ft_lstadd_back(&map, ft_lstnew(line));
-	ft_lstadd_back(&map, ft_lstnew(line));
-	//free(line);
-	i = ft_lstsize(map);
-	if (!(map1 = (char **)malloc(sizeof(char *) * (i + 1))))
+	i = 0;
+	tmp = NULL;
+	if (!(map_char = (char **)malloc(sizeof(char *) * (y + 1))))
 		return (NULL);
-	map1[i] = NULL;
-	while (map)
+	map_char[y] = NULL;
+	while (*map)
 	{
-		map1[j] = map->content;
-		tmp = map;
-		map = map->next;
+		map_char[i] = (*map)->content;
+		tmp = (*map);
+		(*map) = (*map)->next;
 		free(tmp);
-		j++;
+		i++;
 	}
-	return (to_rectangle_map(map1, all));
+	return (to_rectangle_map(map_char, all));
+}
+
+char	**get_map(t_all *all, int fd)
+{
+	char	*line;
+	int 	y;
+	t_list	*map;
+	int		line_len;
+
+	y = 0;
+	map = NULL;
+	line = NULL;
+	line_len = 0;
+	while (get_next_line(fd, &line) > 0 && !(line_len = ft_strlen(line)))
+		free(line);
+	while (line_len > 0)
+	{
+		if (*line)
+			ft_lstadd_back(&map, ft_lstnew(line));
+		if (get_next_line(fd, &line) == 0)
+			break;
+		line_len = ft_strlen(line);
+	}
+	if (*line)
+		ft_lstadd_back(&map, ft_lstnew(line));
+	else
+		free(line);
+	y = ft_lstsize(map);
+	return (map_list_to_char(all, y, &map));
 }
 
 

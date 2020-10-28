@@ -13,8 +13,11 @@
 #ifndef ERRORS_H
 # define ERRORS_H
 
+# define TPATH_ERR 1
+# define TPATH_TXT "--Invalid texture path--"
 
-#define EPATH
+# define TPATH_EXT_ERR 2
+# define TPATH_EXT_TXT "--Wrong texture file extension. Expected '.xpm'--"
 
 // # define
 

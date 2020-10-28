@@ -17,13 +17,12 @@ int	choose_texture(t_all *all)
 {
 	if (all->ray->what_intersection == 1 && all->ray->is_right)
 		return(0);
-	if (all->ray->what_intersection == 0 && all->ray->is_up)
+	else if (all->ray->what_intersection == 0 && all->ray->is_up)
 		return(1);
-	if (all->ray->what_intersection == 1 && all->ray->is_left)
+	else if (all->ray->what_intersection == 1 && all->ray->is_left)
 		return(2);
-	if (all->ray->what_intersection == 0 && all->ray->is_down)
+	else 
 		return(3);
-	return (4);
 }
 
 void	line_drawing(t_all *all, double slice_height, int txt_nbr, int texture_x, double height_diff)
@@ -78,11 +77,6 @@ void	draw_vertical_line(t_all *all, double start)
 }
 
 
-void	error_processor(void)
-{
-	perror("Invalid texture path");
-	exit(1);
-}
 int		draw_screen(t_all *all)
 {
 	
@@ -101,20 +95,20 @@ void	get_textures(t_all *all)
 	i = 0;
 	while (i < 5)
 	{
+		// if (!(ft_strncmp(".xpm", ft_strrchr(all->tex[i].path, '.'), 4)))
+		// 	return (error_processor(TPATH_EXT_ERR));
 		if (!(all->tex[i].img = mlx_xpm_file_to_image(all->win->mlx, all->tex[i].path, &all->tex[i].width, &all->tex[i].height)))
-		{
-			return (error_processor());
-		}
+			return (error_processor(TPATH_ERR));
 		all->tex[i].addr = (int*)mlx_get_data_addr(all->tex[i].img, &all->tex[i].bits_per_pixel, &all->tex[i].line_length, &all->tex[i].endian);
 		all->tex[i].step_x = (all->tex[i].width >= SCALE) ? ((double)all->tex[i].width / SCALE) : 1 / ((double)SCALE / all->tex[i].width);
 		i++;
 	}
-			int j = 0;
-		while (all->map[j])
-		{
-			printf("j is %d %s\n", j, all->map[j]);
-			j++;
-		}
+		// 	int j = 0;
+		// while (all->map[j])
+		// {
+		// 	printf("j is %5d %s\n", j, all->map[j]);
+		// 	j++;
+		// }
 }
 
 void	struct_init(t_all *all)

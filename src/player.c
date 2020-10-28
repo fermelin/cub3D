@@ -179,3 +179,20 @@ int		key_release(int key, t_all *all)
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
