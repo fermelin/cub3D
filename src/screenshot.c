@@ -19,23 +19,25 @@ void    int_to_char(unsigned char *c, int i)
     c[2] = (unsigned char)(i >> 16);
     c[3] = (unsigned char)(i >> 24);
 }
-int     bmp_header(int fd, int h, int w, int padsize)
+
+int     bmp_header(int fd, int height, int width, int padsize)
 {
     unsigned char   header[54];
     int             filesize;
-    filesize = 54 + (w * 3 * h) + (padsize * h);
+    filesize = 54 + (width * 3 * height) + (padsize * height);
     ft_bzero(header, 54);
     header[0] = (unsigned char)('B');
     header[1] = (unsigned char)('M');
     int_to_char(header + 2, filesize);
     header[10] = (unsigned char)(54);
     header[14] = (unsigned char)(40);
-    int_to_char(header + 18, w);
-    int_to_char(header + 22, h);
+    int_to_char(header + 18, width);
+    int_to_char(header + 22, height);
     header[26] = (unsigned char)(1);
     header[28] = (unsigned char)(24);
     return (!(write(fd, header, 54) < 0));
 }
+
 int     bmp_data(int fd, t_all *all, int padsize)
 {
     unsigned char   zero[3];
@@ -60,6 +62,7 @@ int     bmp_data(int fd, t_all *all, int padsize)
     }
     return (1);
 }
+
 int     take_screenshot(t_all *all)
 {
     int padsize;
@@ -73,10 +76,11 @@ int     take_screenshot(t_all *all)
     close(fd);
     return (1);
 }
-void    make_screenshot(t_all *all)//, char *str)
+
+void    make_screenshot(t_all *all, char *argv)
 {
-    // if (ft_strncmp("--save", str, 7) != 0)
-    //  put_error("ERROR\nUnrecognized second argument\n");
+    if (ft_strncmp("--save", argv, 7) != 0)
+        error_processor(WRONG_SECOND_ARG_ERR);
     all->screenshot = 1;
     take_screenshot(all);
     exit(0);

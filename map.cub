@@ -1,19 +1,17 @@
 NO    		     ./textures/bluestone.xpm
 	
-  SO     	    ./textures/purplestone.xpm	 
+  SO	   	    ./textures/purplestone.xpm	 
 
 WE     	./textures/fix1.xpm	
 
      EA     	./textures/fix2.xpm   
 
-       S    	  	    ./textures/greenlight.xpm	
+       S    	  	    ./textures/greenlight.xpm
 
-R   			  10000		10000
+R   			   10000 214748364
 
-F   128  ,   128   ,   0  
-
+F  128  ,   128   ,   0 
 C   0  ,   0 ,   128
-
 
 
 
@@ -33,3 +31,5 @@ C   0  ,   0 ,   128
 1100000111010101111101111000111
 11110111 1110101 101111010001
 11111111 1111111 111111111111
+
+

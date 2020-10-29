@@ -24,8 +24,9 @@
 #include <errno.h>
 #include <string.h>
 
-#define SCALE 64
-#define FOV M_PI / 3
+# define SCALE 64
+# define FOV M_PI / 3
+// # define 
 
 // typedef enum e_parser
 // {
@@ -126,6 +127,7 @@ typedef struct s_parsing
 	int 		is_ceiling;
 	int 		floor;
 	int 		ceiling;
+	int 		player;
 }				t_parsing;
 
 typedef	struct s_all
@@ -149,7 +151,7 @@ int mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 void    draw_square(t_all *all, int x, int y);
 void	my_mlx_pixel_put(t_win *data, int x, int y, int color);
 void	my_mlx_pixel_put_texture(t_all *all, int x, int y, int color);
-char	**get_map(t_all *all, int fd);
+char	**get_map(t_all *all, int fd, char *line);
 void	draw_vertical_line(t_all *all, double start);
 void	set_background(t_all *all);
 void	get_ray_direction(t_all *all, double start);
@@ -169,9 +171,11 @@ void	get_sprites_params(t_all *all);
 void	draw_sprites(t_all *all);
 void	sort_sprites(t_all *all);
 void	error_processor(int errnum);
-void	make_screenshot(t_all *all);
+void	make_screenshot(t_all *all, char *argv);
 int		put_error(char *str);//, t_all *all);
 void	check_map_symbols(t_all *all);
+void	get_textures(t_all *all);
+void	get_texture_path(t_all *all, char *trimmed, int what_texture, int shift);
 
 
 

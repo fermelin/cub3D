@@ -22,7 +22,9 @@ SRC = 	src/main.c \
 		src/sprites.c \
 		src/screenshot.c \
 		src/errors.c \
-		src/map_validation.c 
+		src/map_validation.c \
+		src/parser_init_and_textures.c \
+		src/walls_drawing.c
 
 HDR = cub3d.h
 LIBFTDIR = ./libft

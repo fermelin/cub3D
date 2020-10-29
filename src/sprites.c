@@ -139,6 +139,7 @@ int 	get_sprite_color(t_all *all, int y, int i)
 	}
 	return (0);
 }
+
 void	draw_sprites(t_all *all)
 {
 	int 	y;

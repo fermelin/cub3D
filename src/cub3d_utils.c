@@ -94,6 +94,21 @@ void	get_map_size(char **map, t_all *all)
 	printf("map_y is %d\n", all->win->map_y);
 }
 
+void	player_dir_and_xy_init(t_all *all, char letter, int x, int y)
+{
+	if (letter == 'W')
+		all->player->dir = M_PI;
+	if (letter == 'E')
+		all->player->dir = 0;
+	if (letter == 'S')
+		all->player->dir = 3 * M_PI_2;
+	if (letter == 'N')
+		all->player->dir = M_PI_2;
+	all->player->x = x * SCALE + SCALE / 2;
+	all->player->y = y * SCALE + SCALE / 2;
+	all->parsing.player = 1;
+}
+
 void	find_player(t_all *all)
 {
 	int x;
@@ -107,20 +122,15 @@ void	find_player(t_all *all)
 		{
 			if (all->map[y][x] == 'W' || all->map[y][x] == 'E' || all->map[y][x] == 'S' || all->map[y][x] == 'N')
 			{
-				if (all->map[y][x] == 'W')
-					all->player->dir = M_PI;
-				if (all->map[y][x] == 'E')
-					all->player->dir = 0;
-				if (all->map[y][x] == 'S')
-					all->player->dir = 3 * M_PI_2;
-				if (all->map[y][x] == 'N')
-					all->player->dir = M_PI_2;
-				all->player->x = x * SCALE + SCALE / 2;
-				all->player->y = y * SCALE + SCALE / 2;
-				return ;
+				if (all->parsing.player == 0)
+					player_dir_and_xy_init(all, all->map[y][x], x, y);
+				else
+					error_processor(MULTIPLE_PLAYERS_ERR);
 			}
 			x++;
 		}
 		y++;
 	}
+	if (all->parsing.player == 0)
+		error_processor(NO_PLAYER_ERR);
 }

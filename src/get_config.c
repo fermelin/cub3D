@@ -63,19 +63,16 @@ static	char	**map_list_to_char(t_all *all, int y, t_list **map)
 	return (to_rectangle_map(map_char, all));
 }
 
-char	**get_map(t_all *all, int fd)
+char	**get_map(t_all *all, int fd, char *line)
 {
-	char	*line;
 	int 	y;
 	t_list	*map;
 	int		line_len;
 
 	y = 0;
 	map = NULL;
-	line = NULL;
 	line_len = 0;
-	while (get_next_line(fd, &line) > 0 && !(line_len = ft_strlen(line)))
-		free(line);
+	line_len = ft_strlen(line);
 	while (line_len > 0)
 	{
 		if (*line)
@@ -92,20 +89,6 @@ char	**get_map(t_all *all, int fd)
 	return (map_list_to_char(all, y, &map));
 }
 
-
-
-// void	map_horizontal_validation(t_all *all)
-// {
-// 	int x;
-// 	int y;
-
-// 	x = 0;
-// 	y = 0;
-// 	while (all->map[y])
-// 	{
-
-// 	}
-// }
 
 
 
