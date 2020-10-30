@@ -14,8 +14,8 @@ NAME = cub3d
 CC = gcc
 SRC = 	src/main.c \
 		src/cub3d_utils.c \
-		src/get_config.c \
-		src/draw_map.c \
+		src/parser_map.c \
+		src/draw_minimap.c \
 		src/ray_casting.c \
 		src/player.c \
 		src/parser.c \
@@ -23,12 +23,21 @@ SRC = 	src/main.c \
 		src/screenshot.c \
 		src/errors.c \
 		src/map_validation.c \
-		src/parser_init_and_textures.c \
-		src/walls_drawing.c
-
+		src/walls_drawing.c \
+		src/movement_events.c \
+		src/initialization.c \
+		src/parser_resolution.c \
+		src/parser_background.c \
+		src/parser_sprites.c
 HDR = cub3d.h
-LIBFTDIR = ./libft
-CFLAGS = -Wall -Werror -Wextra -g -I.
+
+LIBFTDIR = ./libft/
+LIBFT = $(LIBFTDIR)libft.a
+
+MLXDIR = ./minilibx/
+MLX = $(MLXDIR)libmlx.a
+
+CFLAGS = -Wall -Werror -Wextra -Iincludes -Iminilibx -Ilibft
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
@@ -36,13 +45,24 @@ all: $(NAME)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -L minilibx -lmlx -framework OpenGL -framework AppKit -L. -lft $? -o $(NAME)
+$(NAME): $(LIBFT) $(MLX) $(OBJ)
+	$(CC) $(CFLAGS)  -Llibft -lft -Lminilibx -lmlx -framework OpenGL -framework AppKit $^ -o $(NAME)
+
+$(LIBFT):
+	make bonus -C $(LIBFTDIR)
+
+$(MLX):
+	make -C $(MLXDIR)
 
 clean: 
+	make clean -C $(LIBFTDIR)
+	make clean -C $(MLXDIR)
 	rm -f $(OBJ)
+
 fclean: clean
+	make fclean -C $(LIBFTDIR)
 	rm -f $(NAME)
+	rm -f screenshot.bmp
 
 re: fclean all
 
