@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fermelin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fermelin <fermelin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 12:55:07 by fermelin          #+#    #+#             */
-/*   Updated: 2020/10/16 12:55:29 by fermelin         ###   ########.fr       */
+/*   Updated: 2020/11/19 00:39:17 by fermelin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,21 @@ static void	move_up_or_down(t_all *all)
 	{
 		if ((!(all->walls.is_right) && sign * all->player->cos_dir > 0)
 			|| (!(all->walls.is_left) && sign * all->player->cos_dir < 0))
-			all->player->x += sign * all->player->cos_dir * SCALE / 8;
+			all->player->x += sign * all->player->cos_dir * SCALE / 8 * SPEED;
 		else if ((!(all->walls.is_up) && sign * all->player->sin_dir > 0)
 			|| (!(all->walls.is_down) && sign * all->player->sin_dir < 0))
-			all->player->y -= sign * all->player->sin_dir * SCALE / 8;
+			all->player->y -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
 	}
 	else if ((all->walls.is_up && sign * all->player->sin_dir > 0)
 		|| (all->walls.is_down && sign * all->player->sin_dir < 0))
-		all->player->x += sign * all->player->cos_dir * SCALE / 8;
+		all->player->x += sign * all->player->cos_dir * SCALE / 8 * SPEED;
 	else if ((all->walls.is_right && sign * all->player->cos_dir > 0)
 		|| (all->walls.is_left && sign * all->player->cos_dir < 0))
-		all->player->y -= sign * all->player->sin_dir * SCALE / 8;
+		all->player->y -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
 	else
 	{
-		all->player->x += sign * all->player->cos_dir * SCALE / 8;
-		all->player->y -= sign * all->player->sin_dir * SCALE / 8;
+		all->player->x += sign * all->player->cos_dir * SCALE / 8 * SPEED;
+		all->player->y -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
 	}
 }
 
@@ -74,21 +74,21 @@ static void	move_left_or_right(t_all *all)
 	{
 		if ((!(all->walls.is_right) && sign * all->player->sin_dir < 0)
 			|| (!(all->walls.is_left) && sign * all->player->sin_dir > 0))
-			all->player->x -= sign * all->player->sin_dir * SCALE / 8;
+			all->player->x -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
 		else if ((!(all->walls.is_up) && sign * all->player->cos_dir > 0)
 			|| (!(all->walls.is_down) && sign * all->player->cos_dir < 0))
-			all->player->y -= sign * all->player->cos_dir * SCALE / 8;
+			all->player->y -= sign * all->player->cos_dir * SCALE / 8 * SPEED;
 	}
 	else if ((all->walls.is_up && sign * all->player->cos_dir > 0)
 		|| (all->walls.is_down && sign * all->player->cos_dir < 0))
-		all->player->x -= sign * all->player->sin_dir * SCALE / 8;
+		all->player->x -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
 	else if ((all->walls.is_right && sign * all->player->sin_dir < 0)
 		|| (all->walls.is_left && sign * all->player->sin_dir > 0))
-		all->player->y -= sign * all->player->cos_dir * SCALE / 8;
+		all->player->y -= sign * all->player->cos_dir * SCALE / 8 * SPEED;
 	else
 	{
-		all->player->x -= sign * all->player->sin_dir * SCALE / 8;
-		all->player->y -= sign * all->player->cos_dir * SCALE / 8;
+		all->player->x -= sign * all->player->sin_dir * SCALE / 8 * SPEED;
+		all->player->y -= sign * all->player->cos_dir * SCALE / 8 * SPEED;
 	}
 }
 
@@ -113,9 +113,9 @@ static void	get_player_direction(t_all *all)
 int			player_movement(t_all *all)
 {
 	if (all->movements.rot_right)
-		all->player->dir -= 0.06;
+		all->player->dir -= 0.05 * SPEED;
 	if (all->movements.rot_left)
-		all->player->dir += 0.06;
+		all->player->dir += 0.05 * SPEED;
 	is_wall_close(all);
 	if (all->movements.up || all->movements.down)
 	{

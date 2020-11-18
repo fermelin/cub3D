@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fermelin <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: fermelin <fermelin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/07 13:42:02 by fermelin          #+#    #+#              #
-#    Updated: 2020/10/11 13:31:58 by fermelin         ###   ########.fr        #
+#    Updated: 2020/11/19 00:46:35 by fermelin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,19 +34,38 @@ HDR = cub3d.h
 LIBFTDIR = ./libft/
 LIBFT = $(LIBFTDIR)libft.a
 
-MLXDIR = ./minilibx/
-MLX = $(MLXDIR)libmlx.a
+MLXDIR_MACOS = ./minilibx/
+MLX_MACOS = $(MLXDIR_MACOS)libmlx.a
 
-CFLAGS = -Wall -Werror -Wextra -Iincludes -Iminilibx -Ilibft
+MLXDIR_LINUX = ./minilibx-linux/
+MLX_LINUX = $(MLXDIR_LINUX)libmlx_Linux.a
+
+CFLAGS = -Wall -Werror -Wextra -I./includes -I./libft -I$(MLXDIR)
+CFLAGS_LINUX = -I. -I/usr/include -O3 -D LINUX=1
+
+MACOS_FLAGS = -L./minilibx -lmlx -framework OpenGL -framework AppKit
+LINUX_FLAGS = -L./minilibx-linux ./minilibx-linux/libmlx_Linux.a -L/usr/lib -lXext -lX11 -lm -lz
+
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
+
+ifdef LINUX
+CFLAGS += $(CFLAGS_LINUX)
+MLX = $(MLX_LINUX)
+MLXDIR = $(MLXDIR_LINUX)
+MLX_FLAGS = $(LINUX_FLAGS)
+else
+MLX = $(MLX_MACOS)
+MLXDIR = $(MLXDIR_MACOS)
+MLX_FLAGS = $(MACOS_FLAGS)
+endif
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(LIBFT) $(MLX) $(OBJ)
-	$(CC) $(CFLAGS)  -Llibft -lft -Lminilibx -lmlx -framework OpenGL -framework AppKit $^ -o $(NAME)
+	$(CC) $(CFLAGS) $^ -o $(NAME) -Llibft -lft $(MLX_FLAGS) 
 
 $(LIBFT):
 	make bonus -C $(LIBFTDIR)
@@ -54,9 +73,12 @@ $(LIBFT):
 $(MLX):
 	make -C $(MLXDIR)
 
+linux:
+	$(MAKE) LINUX=1 all
 clean: 
 	make clean -C $(LIBFTDIR)
-	make clean -C $(MLXDIR)
+	make clean -C $(MLXDIR_MACOS)
+	make clean -C $(MLXDIR_LINUX)
 	rm -f $(OBJ)
 
 fclean: clean

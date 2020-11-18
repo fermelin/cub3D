@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement_events.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fermelin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fermelin <fermelin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 16:17:20 by fermelin          #+#    #+#             */
-/*   Updated: 2020/10/30 16:17:23 by fermelin         ###   ########.fr       */
+/*   Updated: 2020/11/19 00:21:51 by fermelin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,36 +18,36 @@
 
 int	key_press(int key, t_all *all)
 {
-	if (key == 124)
+	if (key == ROT_RIGHT)
 		all->movements.rot_right = 1;
-	else if (key == 123)
+	else if (key == ROT_LEFT)
 		all->movements.rot_left = 1;
-	else if (key == 13)
+	else if (key == UP)
 		all->movements.up = 1;
-	else if (key == 1)
+	else if (key == DOWN)
 		all->movements.down = 1;
-	else if (key == 0)
+	else if (key == LEFT)
 		all->movements.left = 1;
-	else if (key == 2)
+	else if (key == RIGHT)
 		all->movements.right = 1;
-	else if (key == 53)
+	else if (key == ESC)
 		destroy_all(all);
 	return (0);
 }
 
 int	key_release(int key, t_all *all)
 {
-	if (key == 124)
+	if (key == ROT_RIGHT)
 		all->movements.rot_right = 0;
-	else if (key == 123)
+	else if (key == ROT_LEFT)
 		all->movements.rot_left = 0;
-	else if (key == 13)
+	else if (key == UP)
 		all->movements.up = 0;
-	else if (key == 1)
+	else if (key == DOWN)
 		all->movements.down = 0;
-	else if (key == 0)
+	else if (key == LEFT)
 		all->movements.left = 0;
-	else if (key == 2)
+	else if (key == RIGHT)
 		all->movements.right = 0;
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fermelin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fermelin <fermelin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 12:48:28 by fermelin          #+#    #+#             */
-/*   Updated: 2020/10/09 20:23:32 by fermelin         ###   ########.fr       */
+/*   Updated: 2020/11/19 00:37:33 by fermelin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,28 @@
 
 # define SCALE 64
 # define FOV M_PI / 3
+
+#ifdef LINUX
+# define UP 119
+# define DOWN 115
+# define LEFT 97
+# define RIGHT 100
+# define ROT_LEFT 65361
+# define ROT_RIGHT 65363
+# define ESC 65307
+# define SPEED 0.7
+# define BLACK 0xff000000
+#else
+# define UP 13
+# define DOWN 1
+# define LEFT 0
+# define RIGHT 2
+# define ROT_LEFT 123
+# define ROT_RIGHT 124
+# define ESC 53
+# define SPEED 1
+# define BLACK 0x0
+#endif
 
 typedef	struct	s_win {
 	void		*mlx;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sprites.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fermelin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fermelin <fermelin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 13:31:57 by fermelin          #+#    #+#             */
-/*   Updated: 2020/10/21 13:32:02 by fermelin         ###   ########.fr       */
+/*   Updated: 2020/11/19 00:31:54 by fermelin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ static int		get_sprite_color(t_all *all, int y, int i)
 
 void			draw_sprites(t_all *all)
 {
-	int y;
-	int color;
-	int i;
+	int				y;
+	unsigned int	color;
+	int				i;
 
 	i = 0;
 	while (i < all->sprites_amount)
@@ -107,7 +107,7 @@ void			draw_sprites(t_all *all)
 			while (y < all->sprite[i].size)
 			{
 				color = get_sprite_color(all, y, i);
-				if (color != 0x0)
+				if (color != BLACK)
 					my_mlx_pixel_put(all->win, all->ray->x_line,
 						(int)(all->sprite[i].vert_offset + y), color);
 				y++;
